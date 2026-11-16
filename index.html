@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KyGor — Coming Soon | First-Principles Applied AI</title>
+  <meta name="description" content="KyGor is building resilient, first-principles AI systems and autonomous workflows from the ground up. Launching soon." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+          },
+          colors: {
+            obsidian: '#05080f',
+            panel: '#0a101d',
+            cyanAccent: '#38BDF8',
+            emeraldAccent: '#10B981',
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body {
+      background-color: #05080f;
+      color: #F1F5F9;
+      overflow-x: hidden;
+    }
+
+    #neural-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: auto;
+    }
+
+    .glass-surface {
+      background: rgba(10, 16, 29, 0.74);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .pillar-card {
+      transition: transform 0.25s ease, border-color 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .pillar-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(56, 189, 248, 0.38);
+      background: rgba(13, 21, 38, 0.88);
+      box-shadow: 0 12px 32px -10px rgba(56, 189, 248, 0.16);
+    }
+
+    .pillar-card.pillar-selected {
+      border-color: rgba(16, 185, 129, 0.55);
+      background: rgba(13, 24, 38, 0.92);
+      box-shadow: 0 0 28px rgba(16, 185, 129, 0.16);
+    }
+
+    .hero-title-gradient {
+      background: linear-gradient(135deg, #FFFFFF 0%, #E2E8F0 48%, #38BDF8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #05080f;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1E293B;
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-sky-400/30 selection:text-sky-200 min-h-screen flex flex-col justify-between relative">
+
+  <!-- Interactive Neural Network Particle Canvas -->
+  <canvas id="neural-canvas" aria-hidden="true"></canvas>
+
+  <!-- Radial Contrast Vignette -->
+  <div class="fixed inset-0 pointer-events-none z-[1]" style="background: radial-gradient(circle at 50% 35%, rgba(5, 8, 15, 0.18) 0%, rgba(5, 8, 15, 0.9) 85%);"></div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="glass-surface rounded-xl px-4 py-3 flex items-center gap-2.5 border-sky-400/40 shadow-2xl">
+      <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+      <span id="toast-text" class="font-mono text-xs text-slate-100">Signal transmitted</span>
+    </div>
+  </div>
+
+  <!-- Direct Contact Modal -->
+  <div id="contact-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/80 backdrop-blur-md" role="dialog" aria-modal="true" aria-labelledby="contact-modal-title">
+    <div class="glass-surface rounded-2xl w-full max-w-lg overflow-hidden border-white/15 shadow-2xl">
+      <!-- Modal Top Bar -->
+      <div class="px-5 py-4 border-b border-white/10 flex items-center justify-between bg-obsidian/90">
+        <div class="flex items-center gap-2.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <h2 id="contact-modal-title" class="font-mono text-xs sm:text-sm font-semibold tracking-wide text-white uppercase">
+            Direct Transmission // KyGor
+          </h2>
+        </div>
+        <button id="close-contact-btn" type="button" class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer" aria-label="Close contact dialog">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 6L6 18M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal Form Content -->
+      <div class="p-5 sm:p-6">
+        <form id="contact-form" class="space-y-4" novalidate>
+          <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">
+            Have an inquiry, collaboration idea, or early partnership note? Send a direct message below and we will get back to you.
+          </p>
+
+          <!-- Honeypot field to block automated spam -->
+          <input type="text" name="_honey" tabindex="-1" autocomplete="off" class="hidden" />
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div>
+              <label for="sender-name" class="block font-mono text-[11px] uppercase tracking-wider text-slate-400 mb-1.5">Your Name *</label>
+              <input id="sender-name" name="name" type="text" required placeholder="Alex Morgan"
+                class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian/90 border border-white/10 focus:border-sky-400/60 focus:outline-none text-sm text-white placeholder-slate-600 transition-colors" />
+            </div>
+
+            <div>
+              <label for="sender-email" class="block font-mono text-[11px] uppercase tracking-wider text-slate-400 mb-1.5">Your Email *</label>
+              <input id="sender-email" name="email" type="email" required placeholder="alex@company.com"
+                class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian/90 border border-white/10 focus:border-sky-400/60 focus:outline-none text-sm text-white placeholder-slate-600 transition-colors" />
+            </div>
+          </div>
+
+          <div>
+            <label for="sender-intent" class="block font-mono text-[11px] uppercase tracking-wider text-slate-400 mb-1.5">Subject / Intent</label>
+            <select id="sender-intent" name="subject"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian/90 border border-white/10 focus:border-sky-400/60 focus:outline-none text-sm text-white transition-colors">
+              <option value="General Inquiry">General Inquiry</option>
+              <option value="AI Engineering / Collaboration">AI Engineering / Collaboration</option>
+              <option value="Early Access / Demo Request">Early Access / Demo Request</option>
+              <option value="Feedback">Feedback</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="sender-message" class="block font-mono text-[11px] uppercase tracking-wider text-slate-400 mb-1.5">Message *</label>
+            <textarea id="sender-message" name="message" rows="4" required placeholder="Tell us what you're building or how we can connect..."
+              class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian/90 border border-white/10 focus:border-sky-400/60 focus:outline-none text-sm text-white placeholder-slate-600 transition-colors resize-none"></textarea>
+          </div>
+
+          <!-- Inline Status / Validation Banner -->
+          <div id="form-feedback" class="hidden rounded-xl px-3.5 py-2.5 font-mono text-xs"></div>
+
+          <div class="pt-1 flex flex-col sm:flex-row items-center justify-end gap-2.5">
+            <button type="button" id="cancel-contact-btn" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/10 text-slate-300 font-mono text-xs transition-colors cursor-pointer">
+              Cancel
+            </button>
+            <button type="submit" id="send-message-btn" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-sky-400 to-emerald-400 hover:from-sky-300 hover:to-emerald-300 text-slate-950 font-mono font-semibold text-xs transition-all cursor-pointer shadow-lg shadow-sky-400/20">
+              <svg id="send-spinner" class="hidden w-3.5 h-3.5 animate-spin" viewBox="0 0 24 24" fill="none">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+              </svg>
+              <span id="send-btn-label">Send Message</span>
+              <svg id="send-arrow" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M22 2L11 13" />
+                <path d="M22 2l-7 20-4-9-9-4 20-7z" />
+              </svg>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Navigation Header -->
+  <header class="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-2">
+    <nav class="glass-surface rounded-2xl px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-3">
+      <!-- Brand Identity -->
+      <div class="flex items-center gap-3.5">
+        <a href="#" class="flex items-center gap-2.5 group focus:outline-none">
+          <div class="w-8 h-8 rounded-lg bg-sky-400/10 border border-sky-400/30 flex items-center justify-center group-hover:border-sky-400/60 transition-colors">
+            <svg class="w-4 h-4 text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 4v16" />
+              <path d="M18 4L9 12l9 8" />
+            </svg>
+          </div>
+          <span class="font-sans font-bold text-lg tracking-tight text-white">KyGor</span>
+        </a>
+
+        <div class="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/25">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span class="font-mono text-[11px] tracking-wider text-emerald-300">IN STEALTH // BUILDING</span>
+        </div>
+      </div>
+
+      <!-- Navigation Actions -->
+      <div class="flex items-center gap-2 sm:gap-2.5">
+        <button id="pulse-btn" type="button" class="hidden md:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/10 text-slate-300 hover:text-sky-300 font-mono text-xs transition-colors cursor-pointer">
+          <svg class="w-3.5 h-3.5 text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+          </svg>
+          <span>Pulse Graph</span>
+        </button>
+
+        <a href="https://github.com/atharvparit" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="p-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/10 text-slate-300 hover:text-white transition-colors">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+            <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
+          </svg>
+        </a>
+
+        <a href="https://linkedin.com/in/atharvparit" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="p-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/10 text-slate-300 hover:text-white transition-colors">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z" />
+          </svg>
+        </a>
+
+        <button type="button" data-open-contact class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-sky-400/15 hover:bg-sky-400/25 border border-sky-400/40 text-sky-200 font-mono text-xs font-medium transition-colors cursor-pointer">
+          <span>Contact</span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 flex-1 flex flex-col justify-center gap-12 sm:gap-16">
+
+    <!-- High-Impact Coming Soon Hero -->
+    <section class="max-w-3xl space-y-6">
+      <div class="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-sky-400/10 border border-sky-400/25 font-mono text-xs text-sky-300">
+        <span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span>
+        <span>KYGOR.COM // COMING SOON</span>
+      </div>
+
+      <h1 class="text-4xl sm:text-6xl lg:text-[64px] font-extrabold tracking-tight leading-[1.08] hero-title-gradient">
+        Engineering Real Intelligence, From First Principles.
+      </h1>
+
+      <p class="text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl">
+        Great software isn't born from shortcuts or surface-level hype—it is forged through deep focus, disciplined engineering, and relentless iteration. At KyGor, we are building resilient AI systems and autonomous workflows from the ground up, prioritizing deterministic reliability over noise. Our full platform launches soon.
+      </p>
+
+      <!-- Primary CTA Row -->
+      <div class="pt-2 flex flex-wrap items-center gap-3.5">
+        <button type="button" data-open-contact class="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-gradient-to-r from-sky-400 to-emerald-400 hover:from-sky-300 hover:to-emerald-300 text-slate-950 font-mono font-semibold text-xs sm:text-sm transition-all cursor-pointer shadow-lg shadow-sky-400/20">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+            <polyline points="22,6 12,13 2,6" />
+          </svg>
+          <span>Get in Touch</span>
+        </button>
+
+        <a href="https://github.com/atharvparit" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-5 py-3.5 rounded-xl glass-surface hover:border-white/25 text-slate-200 hover:text-white font-mono text-xs sm:text-sm transition-colors">
+          <span>Follow on GitHub</span>
+          <span>↗</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- 3 Interactive Engineering Pillar Cards -->
+    <section aria-label="Core Engineering Pillars" class="space-y-4">
+      <div class="flex items-center justify-between">
+        <span class="font-mono text-xs uppercase tracking-widest text-slate-400">Core Operating Principles</span>
+        <span class="font-mono text-[11px] text-slate-500 hidden sm:inline">Click any card or canvas to trigger network pulse</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
+        <!-- Pillar 01 -->
+        <div role="button" tabindex="0" class="pillar-card glass-surface rounded-2xl p-6 cursor-pointer select-none flex flex-col justify-between gap-4">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-xs text-sky-400">01 // ARCHITECTURE</span>
+              <span class="w-2 h-2 rounded-full bg-sky-400/70"></span>
+            </div>
+            <h2 class="text-lg font-semibold text-white">First-Principles Engineering</h2>
+            <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">
+              Deconstructing complex problems down to foundational data structures, clean abstractions, and verifiable retrieval pipelines rather than fragile wrappers.
+            </p>
+          </div>
+          <div class="pt-2 border-t border-white/[0.06] font-mono text-[11px] text-slate-500 flex items-center justify-between">
+            <span>STATUS: FOUNDATIONAL</span>
+            <span class="text-sky-400/80">SIGNAL →</span>
+          </div>
+        </div>
+
+        <!-- Pillar 02 -->
+        <div role="button" tabindex="0" class="pillar-card glass-surface rounded-2xl p-6 cursor-pointer select-none flex flex-col justify-between gap-4">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-xs text-emerald-400">02 // SYSTEMS</span>
+              <span class="w-2 h-2 rounded-full bg-emerald-400/70"></span>
+            </div>
+            <h2 class="text-lg font-semibold text-white">Autonomous Workflows</h2>
+            <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">
+              Designing deterministic multi-step reasoning loops and tool-use architectures engineered to execute real-world tasks with measurable precision.
+            </p>
+          </div>
+          <div class="pt-2 border-t border-white/[0.06] font-mono text-[11px] text-slate-500 flex items-center justify-between">
+            <span>STATUS: IN LAB</span>
+            <span class="text-emerald-400/80">SIGNAL →</span>
+          </div>
+        </div>
+
+        <!-- Pillar 03 -->
+        <div role="button" tabindex="0" class="pillar-card glass-surface rounded-2xl p-6 cursor-pointer select-none flex flex-col justify-between gap-4">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-xs text-sky-400">03 // VELOCITY</span>
+              <span class="w-2 h-2 rounded-full bg-sky-400/70"></span>
+            </div>
+            <h2 class="text-lg font-semibold text-white">Relentless Execution</h2>
+            <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">
+              Every breakthrough begins at zero. Deep work, continuous learning, and shipping working systems one clean commit at a time.
+            </p>
+          </div>
+          <div class="pt-2 border-t border-white/[0.06] font-mono text-[11px] text-slate-500 flex items-center justify-between">
+            <span>STATUS: ACTIVE</span>
+            <span class="text-sky-400/80">SIGNAL →</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Minimal Footer -->
+  <footer class="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3 font-mono text-xs text-slate-500">
+    <div>© 2026 KyGor // kygor.com</div>
+    <div class="flex items-center gap-4">
+      <button type="button" data-open-contact class="text-slate-300 hover:text-sky-300 transition-colors cursor-pointer">
+        Contact
+      </button>
+      <span>•</span>
+      <a href="https://github.com/atharvparit" target="_blank" rel="noopener noreferrer" class="hover:text-sky-300 transition-colors">GitHub</a>
+      <span>•</span>
+      <a href="https://linkedin.com/in/atharvparit" target="_blank" rel="noopener noreferrer" class="hover:text-sky-300 transition-colors">LinkedIn</a>
+    </div>
+  </footer>
+
+  <!-- Interactive Canvas & Direct Form Delivery Script -->
+  <script>
+    (function () {
+      'use strict';
+
+      /* =======================================================================
+         1. TOAST NOTIFICATION HELPER
+         ======================================================================= */
+      const toastEl = document.getElementById('toast');
+      const toastTextEl = document.getElementById('toast-text');
+      let toastTimer = null;
+
+      function showToast(message) {
+        if (!toastEl || !toastTextEl) return;
+        toastTextEl.textContent = message;
+        toastEl.classList.remove('translate-y-20', 'opacity-0');
+        toastEl.classList.add('translate-y-0', 'opacity-100');
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toastEl.classList.remove('translate-y-0', 'opacity-100');
+          toastEl.classList.add('translate-y-20', 'opacity-0');
+        }, 3200);
+      }
+
+      /* =======================================================================
+         2. CONTACT MODAL & DIRECT EMAIL DELIVERY (FORMSUBMIT AJAX + FALLBACK)
+         =======================================================================
+         NOTE ON ACTIVATION / OPTIONAL ALTERNATIVE:
+         - On the very first form submission sent to FormSubmit, check your
+           hellokygor@gmail.com inbox (and Spam folder) for a one-time
+           "Activate FormSubmit" confirmation email and click the link inside.
+         - Alternatively, you can swap the endpoint below to Web3Forms
+           (https://api.web3forms.com/submit) with your free access_key.
+         ======================================================================= */
+      const contactModal = document.getElementById('contact-modal');
+      const closeContactBtn = document.getElementById('close-contact-btn');
+      const cancelContactBtn = document.getElementById('cancel-contact-btn');
+      const contactForm = document.getElementById('contact-form');
+      const formFeedback = document.getElementById('form-feedback');
+      const sendBtn = document.getElementById('send-message-btn');
+      const sendSpinner = document.getElementById('send-spinner');
+      const sendBtnLabel = document.getElementById('send-btn-label');
+      const sendArrow = document.getElementById('send-arrow');
+
+      const DESTINATION_EMAIL = 'hellokygor@gmail.com';
+      const FORMSUBMIT_ENDPOINT = 'https://formsubmit.co/ajax/' + DESTINATION_EMAIL;
+
+      function openContactModal() {
+        if (!contactModal) return;
+        formFeedback.classList.add('hidden');
+        contactModal.classList.remove('hidden');
+        contactModal.classList.add('flex');
+        setTimeout(() => {
+          document.getElementById('sender-name')?.focus();
+        }, 60);
+        fireGlobalPulses();
+      }
+
+      function closeContactModal() {
+        if (!contactModal) return;
+        contactModal.classList.add('hidden');
+        contactModal.classList.remove('flex');
+      }
+
+      document.querySelectorAll('[data-open-contact]').forEach((btn) => {
+        btn.addEventListener('click', openContactModal);
+      });
+
+      closeContactBtn?.addEventListener('click', closeContactModal);
+      cancelContactBtn?.addEventListener('click', closeContactModal);
+      contactModal?.addEventListener('click', (e) => {
+        if (e.target === contactModal) closeContactModal();
+      });
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeContactModal();
+      });
+
+      function setFormStatus(type, message) {
+        formFeedback.classList.remove('hidden', 'bg-red-500/15', 'border-red-500/30', 'text-red-300', 'bg-emerald-500/15', 'border-emerald-500/30', 'text-emerald-300', 'border');
+        formFeedback.classList.add('border');
+        if (type === 'error') {
+          formFeedback.classList.add('bg-red-500/15', 'border-red-500/30', 'text-red-300');
+        } else {
+          formFeedback.classList.add('bg-emerald-500/15', 'border-emerald-500/30', 'text-emerald-300');
+        }
+        formFeedback.textContent = message;
+      }
+
+      function setSendingState(isSending) {
+        sendBtn.disabled = isSending;
+        if (isSending) {
+          sendSpinner.classList.remove('hidden');
+          sendArrow.classList.add('hidden');
+          sendBtnLabel.textContent = 'Transmitting...';
+          sendBtn.classList.add('opacity-80', 'cursor-not-allowed');
+        } else {
+          sendSpinner.classList.add('hidden');
+          sendArrow.classList.remove('hidden');
+          sendBtnLabel.textContent = 'Send Message';
+          sendBtn.classList.remove('opacity-80', 'cursor-not-allowed');
+        }
+      }
+
+      contactForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        formFeedback.classList.add('hidden');
+
+        const name = document.getElementById('sender-name').value.trim();
+        const email = document.getElementById('sender-email').value.trim();
+        const intent = document.getElementById('sender-intent').value;
+        const message = document.getElementById('sender-message').value.trim();
+        const honey = contactForm.querySelector('input[name="_honey"]')?.value || '';
+
+        if (honey) return; // Ignore bot submissions
+
+        if (!name || !email || !message) {
+          setFormStatus('error', 'Please fill in your name, email address, and message.');
+          return;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          setFormStatus('error', 'Please enter a valid email address.');
+          return;
+        }
+
+        setSendingState(true);
+
+        try {
+          const response = await fetch(FORMSUBMIT_ENDPOINT, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+              name: name,
+              email: email,
+              _replyto: email,
+              _subject: `[KyGor Inquiry] ${intent} — from ${name}`,
+              intent: intent,
+              message: message,
+              _template: 'table'
+            })
+          });
+
+          const result = await response.json().catch(() => ({}));
+
+          if (response.ok && (result.success === 'true' || result.success === true || response.status === 200)) {
+            setFormStatus('success', 'Message delivered successfully. We will respond shortly.');
+            showToast('Message delivered to KyGor');
+            fireGlobalPulses();
+            contactForm.reset();
+            setTimeout(() => {
+              closeContactModal();
+            }, 1800);
+          } else {
+            throw new Error(result.message || 'Endpoint returned non-200 status');
+          }
+        } catch (_) {
+          // Automatic mailto: fallback if offline or blocked by strict network extensions
+          const subjectEncoded = encodeURIComponent(`[KyGor Inquiry] ${intent} — ${name}`);
+          const bodyEncoded = encodeURIComponent(`Name: ${name}\nReply Email: ${email}\nIntent: ${intent}\n\n${message}`);
+          setFormStatus('success', 'Opening your default mail client to complete delivery...');
+          window.location.href = `mailto:${DESTINATION_EMAIL}?subject=${subjectEncoded}&body=${bodyEncoded}`;
+          setTimeout(() => {
+            closeContactModal();
+          }, 1500);
+        } finally {
+          setSendingState(false);
+        }
+      });
+
+      /* =======================================================================
+         3. INTERACTIVE PILLAR CARD SELECTION & PULSE TRIGGER
+         ======================================================================= */
+      const pillarCards = document.querySelectorAll('.pillar-card');
+      pillarCards.forEach((card) => {
+        const activateCard = () => {
+          pillarCards.forEach((c) => c.classList.remove('pillar-selected'));
+          card.classList.add('pillar-selected');
+          fireGlobalPulses();
+        };
+        card.addEventListener('click', activateCard);
+        card.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            activateCard();
+          }
+        });
+      });
+
+      /* =======================================================================
+         4. INTERACTIVE NEURAL NETWORK PARTICLE CANVAS
+         ======================================================================= */
+      const canvas = document.getElementById('neural-canvas');
+      const ctx = canvas.getContext('2d');
+      let width = 0;
+      let height = 0;
+      let nodes = [];
+      let pulses = [];
+      const pointer = { x: null, y: null, radius: 170 };
+
+      function resizeCanvas() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        const targetCount = Math.min(82, Math.max(32, Math.floor((width * height) / 18500)));
+        nodes = [];
+        for (let i = 0; i < targetCount; i++) {
+          const isCyan = Math.random() > 0.62;
+          nodes.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            vx: (Math.random() - 0.5) * 0.42,
+            vy: (Math.random() - 0.5) * 0.42,
+            r: isCyan ? 2.2 : 1.5,
+            color: isCyan ? '#38BDF8' : '#10B981'
+          });
+        }
+      }
+
+      function spawnPulsesAt(ox, oy) {
+        if (!nodes.length) return;
+        const nearest = nodes
+          .map((n, i) => ({ i, d: Math.hypot(n.x - ox, n.y - oy) }))
+          .sort((a, b) => a.d - b.d)
+          .slice(0, 4);
+
+        nearest.forEach(({ i }) => {
+          const src = nodes[i];
+          nodes.forEach((dst) => {
+            if (src === dst) return;
+            if (Math.hypot(src.x - dst.x, src.y - dst.y) < 190 && pulses.length < 60) {
+              pulses.push({
+                from: src,
+                to: dst,
+                t: 0,
+                speed: 0.024 + Math.random() * 0.018,
+                color: Math.random() > 0.35 ? '#38BDF8' : '#10B981'
+              });
+            }
+          });
+        });
+      }
+
+      function fireGlobalPulses() {
+        for (let k = 0; k < 3; k++) {
+          const n = nodes[Math.floor(Math.random() * nodes.length)];
+          if (n) spawnPulsesAt(n.x, n.y);
+        }
+      }
+
+      document.getElementById('pulse-btn')?.addEventListener('click', () => {
+        fireGlobalPulses();
+        showToast('Neural network pulse propagated');
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        pointer.x = e.clientX;
+        pointer.y = e.clientY;
+      }, { passive: true });
+
+      window.addEventListener('mouseleave', () => {
+        pointer.x = null;
+        pointer.y = null;
+      });
+
+      window.addEventListener('click', (e) => {
+        spawnPulsesAt(e.clientX, e.clientY);
+      });
+
+      window.addEventListener('touchstart', (e) => {
+        if (e.touches && e.touches[0]) {
+          spawnPulsesAt(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      }, { passive: true });
+
+      window.addEventListener('resize', resizeCanvas);
+
+      function renderLoop() {
+        ctx.clearRect(0, 0, width, height);
+        const maxDist = width < 640 ? 125 : 165;
+
+        for (let i = 0; i < nodes.length; i++) {
+          const a = nodes[i];
+          a.x += a.vx;
+          a.y += a.vy;
+
+          if (a.x < 0 || a.x > width) a.vx *= -1;
+          if (a.y < 0 || a.y > height) a.vy *= -1;
+
+          if (pointer.x !== null && pointer.y !== null) {
+            const dx = pointer.x - a.x;
+            const dy = pointer.y - a.y;
+            const dist = Math.hypot(dx, dy);
+            if (dist < pointer.radius && dist > 1) {
+              a.x -= (dx / dist) * 0.32;
+              a.y -= (dy / dist) * 0.32;
+            }
+          }
+
+          for (let j = i + 1; j < nodes.length; j++) {
+            const b = nodes[j];
+            const dist = Math.hypot(a.x - b.x, a.y - b.y);
+            if (dist < maxDist) {
+              const alpha = (1 - dist / maxDist) * 0.22;
+              ctx.beginPath();
+              ctx.strokeStyle = `rgba(56, 189, 248, ${alpha.toFixed(3)})`;
+              ctx.lineWidth = 0.8;
+              ctx.moveTo(a.x, a.y);
+              ctx.lineTo(b.x, b.y);
+              ctx.stroke();
+            }
+          }
+
+          if (pointer.x !== null && pointer.y !== null) {
+            const pDist = Math.hypot(a.x - pointer.x, a.y - pointer.y);
+            if (pDist < pointer.radius) {
+              const alpha = (1 - pDist / pointer.radius) * 0.4;
+              ctx.beginPath();
+              ctx.strokeStyle = `rgba(16, 185, 129, ${alpha.toFixed(3)})`;
+              ctx.lineWidth = 1;
+              ctx.moveTo(a.x, a.y);
+              ctx.lineTo(pointer.x, pointer.y);
+              ctx.stroke();
+            }
+          }
+
+          ctx.beginPath();
+          ctx.arc(a.x, a.y, a.r, 0, Math.PI * 2);
+          ctx.fillStyle = a.color;
+          ctx.fill();
+        }
+
+        for (let p = pulses.length - 1; p >= 0; p--) {
+          const pulse = pulses[p];
+          pulse.t += pulse.speed;
+          if (pulse.t >= 1) {
+            pulses.splice(p, 1);
+            continue;
+          }
+          const px = pulse.from.x + (pulse.to.x - pulse.from.x) * pulse.t;
+          const py = pulse.from.y + (pulse.to.y - pulse.from.y) * pulse.t;
+
+          ctx.beginPath();
+          ctx.arc(px, py, 2.4, 0, Math.PI * 2);
+          ctx.fillStyle = pulse.color;
+          ctx.shadowBlur = 9;
+          ctx.shadowColor = pulse.color;
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        }
+
+        if (Math.random() < 0.015 && pulses.length < 18) {
+          fireGlobalPulses();
+        }
+
+        requestAnimationFrame(renderLoop);
+      }
+
+      window.onload = function () {
+        resizeCanvas();
+        renderLoop();
+      };
+    })();
+  </script>
+</body>
+</html>
