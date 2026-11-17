@@ -1,28 +1,29 @@
 <!DOCTYPE html>
-<html lang="en" class="dark scroll-smooth">
+<html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KyGor — Coming Soon | First-Principles Applied AI</title>
-  <meta name="description" content="KyGor is building resilient, first-principles AI systems and autonomous workflows from the ground up. Launching soon." />
+  <title>KyGor — Coming Soon</title>
+  <meta name="description" content="KyGor — Quietly engineering foundational software and systems for the long term. Coming soon." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://kygor.com/" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
-      darkMode: 'class',
       theme: {
         extend: {
           fontFamily: {
-            sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
-            mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
           },
           colors: {
-            obsidian: '#05080f',
-            panel: '#0a101d',
-            cyanAccent: '#38BDF8',
-            emeraldAccent: '#10B981',
+            paper: '#FFFFFF',
+            softgray: '#F8FAFC',
+            ink: '#0F172A',
+            muted: '#475569',
           }
         }
       }
@@ -30,691 +31,551 @@
   </script>
   <style>
     body {
-      background-color: #05080f;
-      color: #F1F5F9;
-      overflow-x: hidden;
+      background-color: #FFFFFF;
+      color: #0F172A;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
-    #neural-canvas {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
+    /* Subtle architectural grid on crisp white background */
+    .bg-grid-light {
+      background-size: 48px 48px;
+      background-image:
+        linear-gradient(to right, rgba(15, 23, 42, 0.035) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(15, 23, 42, 0.035) 1px, transparent 1px);
+      mask-image: radial-gradient(ellipse 85% 75% at 50% 30%, #000 35%, transparent 100%);
+      -webkit-mask-image: radial-gradient(ellipse 85% 75% at 50% 30%, #000 35%, transparent 100%);
+    }
+
+    .soft-wash {
+      background: radial-gradient(circle at 50% 0%, rgba(241, 245, 249, 0.9) 0%, rgba(255, 255, 255, 0) 70%);
+    }
+
+    .principle-card {
+      transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease, background-color 0.22s ease;
+    }
+    .principle-card:hover {
+      transform: translateY(-2px);
+      border-color: #CBD5E1;
+      background-color: #FFFFFF;
+      box-shadow: 0 12px 28px -12px rgba(15, 23, 42, 0.08);
+    }
+
+    /* Modal transitions */
+    .modal-backdrop {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .modal-backdrop.active {
+      opacity: 1;
       pointer-events: auto;
     }
-
-    .glass-surface {
-      background: rgba(10, 16, 29, 0.74);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+    .modal-panel {
+      transform: translateY(10px) scale(0.98);
+      transition: transform 0.22s ease;
     }
-
-    .pillar-card {
-      transition: transform 0.25s ease, border-color 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
-    }
-
-    .pillar-card:hover {
-      transform: translateY(-3px);
-      border-color: rgba(56, 189, 248, 0.38);
-      background: rgba(13, 21, 38, 0.88);
-      box-shadow: 0 12px 32px -10px rgba(56, 189, 248, 0.16);
-    }
-
-    .pillar-card.pillar-selected {
-      border-color: rgba(16, 185, 129, 0.55);
-      background: rgba(13, 24, 38, 0.92);
-      box-shadow: 0 0 28px rgba(16, 185, 129, 0.16);
-    }
-
-    .hero-title-gradient {
-      background: linear-gradient(135deg, #FFFFFF 0%, #E2E8F0 48%, #38BDF8 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #05080f;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #1E293B;
-      border-radius: 9999px;
+    .modal-backdrop.active .modal-panel {
+      transform: translateY(0) scale(1);
     }
   </style>
 </head>
-<body class="antialiased selection:bg-sky-400/30 selection:text-sky-200 min-h-screen flex flex-col justify-between relative">
+<body class="min-h-screen flex flex-col justify-between relative overflow-x-hidden bg-white text-slate-900 selection:bg-slate-900 selection:text-white">
 
-  <!-- Interactive Neural Network Particle Canvas -->
-  <canvas id="neural-canvas" aria-hidden="true"></canvas>
+  <!-- Subtle Light Background Layers -->
+  <div class="fixed inset-0 soft-wash pointer-events-none"></div>
+  <div class="fixed inset-0 bg-grid-light pointer-events-none"></div>
 
-  <!-- Radial Contrast Vignette -->
-  <div class="fixed inset-0 pointer-events-none z-[1]" style="background: radial-gradient(circle at 50% 35%, rgba(5, 8, 15, 0.18) 0%, rgba(5, 8, 15, 0.9) 85%);"></div>
-
-  <!-- Toast Notification -->
-  <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
-    <div class="glass-surface rounded-xl px-4 py-3 flex items-center gap-2.5 border-sky-400/40 shadow-2xl">
-      <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-      <span id="toast-text" class="font-mono text-xs text-slate-100">Signal transmitted</span>
+  <!-- Minimalist Pure-Typographic Header -->
+  <header class="relative z-10 w-full max-w-5xl mx-auto px-6 sm:px-10 pt-8 pb-4 flex items-center justify-between">
+    <div class="flex items-baseline gap-0.5 select-none">
+      <span class="text-2xl sm:text-[26px] font-bold tracking-[-0.04em] text-slate-950">Ky</span><span class="text-2xl sm:text-[26px] font-light tracking-[-0.03em] text-slate-500">Gor</span>
     </div>
-  </div>
 
-  <!-- Direct Contact Modal -->
-  <div id="contact-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/80 backdrop-blur-md" role="dialog" aria-modal="true" aria-labelledby="contact-modal-title">
-    <div class="glass-surface rounded-2xl w-full max-w-lg overflow-hidden border-white/15 shadow-2xl">
-      <!-- Modal Top Bar -->
-      <div class="px-5 py-4 border-b border-white/10 flex items-center justify-between bg-obsidian/90">
-        <div class="flex items-center gap-2.5">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <h2 id="contact-modal-title" class="font-mono text-xs sm:text-sm font-semibold tracking-wide text-white uppercase">
-            Direct Transmission // KyGor
-          </h2>
-        </div>
-        <button id="close-contact-btn" type="button" class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer" aria-label="Close contact dialog">
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M18 6L6 18M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-
-      <!-- Modal Form Content -->
-      <div class="p-5 sm:p-6">
-        <form id="contact-form" class="space-y-4" novalidate>
-          <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">
-            Have an inquiry, collaboration idea, or early partnership note? Send a direct message below and we will get back to you.
-          </p>
-
-          <!-- Honeypot field to block automated spam -->
-          <input type="text" name="_honey" tabindex="-1" autocomplete="off" class="hidden" />
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-            <div>
-              <label for="sender-name" class="block font-mono text-[11px] uppercase tracking-wider text-slate-400 mb-1.5">Your Name *</label>
-              <input id="sender-name" name="name" type="text" required placeholder="Alex Morgan"
-                class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian/90 border border-white/10 focus:border-sky-400/60 focus:outline-none text-sm text-white placeholder-slate-600 transition-colors" />
-            </div>
-
-            <div>
-              <label for="sender-email" class="block font-mono text-[11px] uppercase tracking-wider text-slate-400 mb-1.5">Your Email *</label>
-              <input id="sender-email" name="email" type="email" required placeholder="alex@company.com"
-                class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian/90 border border-white/10 focus:border-sky-400/60 focus:outline-none text-sm text-white placeholder-slate-600 transition-colors" />
-            </div>
-          </div>
-
-          <div>
-            <label for="sender-intent" class="block font-mono text-[11px] uppercase tracking-wider text-slate-400 mb-1.5">Subject / Intent</label>
-            <select id="sender-intent" name="subject"
-              class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian/90 border border-white/10 focus:border-sky-400/60 focus:outline-none text-sm text-white transition-colors">
-              <option value="General Inquiry">General Inquiry</option>
-              <option value="AI Engineering / Collaboration">AI Engineering / Collaboration</option>
-              <option value="Early Access / Demo Request">Early Access / Demo Request</option>
-              <option value="Feedback">Feedback</option>
-            </select>
-          </div>
-
-          <div>
-            <label for="sender-message" class="block font-mono text-[11px] uppercase tracking-wider text-slate-400 mb-1.5">Message *</label>
-            <textarea id="sender-message" name="message" rows="4" required placeholder="Tell us what you're building or how we can connect..."
-              class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian/90 border border-white/10 focus:border-sky-400/60 focus:outline-none text-sm text-white placeholder-slate-600 transition-colors resize-none"></textarea>
-          </div>
-
-          <!-- Inline Status / Validation Banner -->
-          <div id="form-feedback" class="hidden rounded-xl px-3.5 py-2.5 font-mono text-xs"></div>
-
-          <div class="pt-1 flex flex-col sm:flex-row items-center justify-end gap-2.5">
-            <button type="button" id="cancel-contact-btn" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/10 text-slate-300 font-mono text-xs transition-colors cursor-pointer">
-              Cancel
-            </button>
-            <button type="submit" id="send-message-btn" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-sky-400 to-emerald-400 hover:from-sky-300 hover:to-emerald-300 text-slate-950 font-mono font-semibold text-xs transition-all cursor-pointer shadow-lg shadow-sky-400/20">
-              <svg id="send-spinner" class="hidden w-3.5 h-3.5 animate-spin" viewBox="0 0 24 24" fill="none">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-              </svg>
-              <span id="send-btn-label">Send Message</span>
-              <svg id="send-arrow" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                <path d="M22 2L11 13" />
-                <path d="M22 2l-7 20-4-9-9-4 20-7z" />
-              </svg>
-            </button>
-          </div>
-        </form>
-      </div>
+    <div class="flex items-center gap-2.5 px-3 py-1 rounded-full border border-slate-200 bg-slate-50/90 backdrop-blur-sm">
+      <span class="relative flex h-2 w-2">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
+      </span>
+      <span class="font-mono text-[11px] tracking-widest uppercase text-slate-600">Stealth // Est. 2026</span>
     </div>
-  </div>
-
-  <!-- Top Navigation Header -->
-  <header class="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-2">
-    <nav class="glass-surface rounded-2xl px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-3">
-      <!-- Brand Identity -->
-      <div class="flex items-center gap-3.5">
-        <a href="#" class="flex items-center gap-2.5 group focus:outline-none">
-          <div class="w-8 h-8 rounded-lg bg-sky-400/10 border border-sky-400/30 flex items-center justify-center group-hover:border-sky-400/60 transition-colors">
-            <svg class="w-4 h-4 text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M6 4v16" />
-              <path d="M18 4L9 12l9 8" />
-            </svg>
-          </div>
-          <span class="font-sans font-bold text-lg tracking-tight text-white">KyGor</span>
-        </a>
-
-        <div class="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/25">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span class="font-mono text-[11px] tracking-wider text-emerald-300">IN STEALTH // BUILDING</span>
-        </div>
-      </div>
-
-      <!-- Navigation Actions -->
-      <div class="flex items-center gap-2 sm:gap-2.5">
-        <button id="pulse-btn" type="button" class="hidden md:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/10 text-slate-300 hover:text-sky-300 font-mono text-xs transition-colors cursor-pointer">
-          <svg class="w-3.5 h-3.5 text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-          </svg>
-          <span>Pulse Graph</span>
-        </button>
-
-        <a href="https://github.com/atharvparit" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="p-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/10 text-slate-300 hover:text-white transition-colors">
-          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-            <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
-          </svg>
-        </a>
-
-        <a href="https://linkedin.com/in/atharvparit" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="p-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/10 text-slate-300 hover:text-white transition-colors">
-          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z" />
-          </svg>
-        </a>
-
-        <button type="button" data-open-contact class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-sky-400/15 hover:bg-sky-400/25 border border-sky-400/40 text-sky-200 font-mono text-xs font-medium transition-colors cursor-pointer">
-          <span>Contact</span>
-        </button>
-      </div>
-    </nav>
   </header>
 
   <!-- Main Content -->
-  <main class="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 flex-1 flex flex-col justify-center gap-12 sm:gap-16">
+  <main class="relative z-10 w-full max-w-5xl mx-auto px-6 sm:px-10 my-auto py-16 sm:py-24">
 
-    <!-- High-Impact Coming Soon Hero -->
-    <section class="max-w-3xl space-y-6">
-      <div class="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-full bg-sky-400/10 border border-sky-400/25 font-mono text-xs text-sky-300">
-        <span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span>
-        <span>KYGOR.COM // COMING SOON</span>
-      </div>
-
-      <h1 class="text-4xl sm:text-6xl lg:text-[64px] font-extrabold tracking-tight leading-[1.08] hero-title-gradient">
-        Engineering Real Intelligence, From First Principles.
-      </h1>
-
-      <p class="text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl">
-        Great software isn't born from shortcuts or surface-level hype—it is forged through deep focus, disciplined engineering, and relentless iteration. At KyGor, we are building resilient AI systems and autonomous workflows from the ground up, prioritizing deterministic reliability over noise. Our full platform launches soon.
+    <!-- Hero Section -->
+    <section class="max-w-2xl">
+      <p class="font-mono text-xs uppercase tracking-[0.22em] text-slate-500 mb-5">
+        Coming Soon &mdash; kygor.com
       </p>
 
-      <!-- Primary CTA Row -->
-      <div class="pt-2 flex flex-wrap items-center gap-3.5">
-        <button type="button" data-open-contact class="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-gradient-to-r from-sky-400 to-emerald-400 hover:from-sky-300 hover:to-emerald-300 text-slate-950 font-mono font-semibold text-xs sm:text-sm transition-all cursor-pointer shadow-lg shadow-sky-400/20">
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-            <polyline points="22,6 12,13 2,6" />
-          </svg>
-          <span>Get in Touch</span>
+      <h1 class="text-4xl sm:text-6xl font-semibold tracking-[-0.035em] text-slate-950 leading-[1.08] mb-6">
+        Built in silence.<br />
+        <span class="text-slate-500 font-normal">Engineered for the long term.</span>
+      </h1>
+
+      <p class="text-base sm:text-lg text-slate-600 leading-relaxed font-normal mb-10 max-w-xl">
+        Great software isn’t rushed to market for applause. We are spending the quiet years mastering core engineering, studying real-world industry bottlenecks, and building enduring systems from first principles. No noise, no premature hype—just disciplined execution when the foundation is ready.
+      </p>
+
+      <!-- Highlighted Collaboration Callout -->
+      <div class="mb-7 max-w-xl rounded-2xl border border-emerald-200/80 bg-emerald-50/70 px-4 py-3.5 flex items-start gap-3">
+        <span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white font-mono text-[11px] font-semibold">
+          &#9733;
+        </span>
+        <p class="text-xs sm:text-sm text-slate-800 leading-relaxed">
+          <span class="font-semibold text-slate-950">Have a sharp eye for broken workflows?</span> Share your problems or refined solutions with us and get a chance to collaborate directly—or earn a spot on <span class="font-semibold text-emerald-900">KyGor’s core team</span> when we launch.
+        </p>
+      </div>
+
+      <!-- Primary Action Buttons -->
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5">
+        <button
+          type="button"
+          onclick="openModal('problem')"
+          class="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-slate-950 text-white font-medium text-sm hover:bg-slate-800 transition-colors cursor-pointer shadow-sm"
+        >
+          <span>Share a Problem / Solution</span>
+          <span aria-hidden="true" class="text-slate-300">&rarr;</span>
         </button>
 
-        <a href="https://github.com/atharvparit" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-5 py-3.5 rounded-xl glass-surface hover:border-white/25 text-slate-200 hover:text-white font-mono text-xs sm:text-sm transition-colors">
-          <span>Follow on GitHub</span>
-          <span>↗</span>
-        </a>
+        <button
+          type="button"
+          onclick="openModal('inquiry')"
+          class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl border border-slate-200 bg-white text-slate-700 font-medium text-sm hover:border-slate-300 hover:text-slate-950 hover:bg-slate-50 transition-colors cursor-pointer"
+        >
+          <span>General Inquiry</span>
+        </button>
       </div>
     </section>
 
-    <!-- 3 Interactive Engineering Pillar Cards -->
-    <section aria-label="Core Engineering Pillars" class="space-y-4">
-      <div class="flex items-center justify-between">
-        <span class="font-mono text-xs uppercase tracking-widest text-slate-400">Core Operating Principles</span>
-        <span class="font-mono text-[11px] text-slate-500 hidden sm:inline">Click any card or canvas to trigger network pulse</span>
-      </div>
+    <!-- Quiet Operating Principles -->
+    <section class="mt-20 sm:mt-24 pt-12 border-t border-slate-200/80">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
-        <!-- Pillar 01 -->
-        <div role="button" tabindex="0" class="pillar-card glass-surface rounded-2xl p-6 cursor-pointer select-none flex flex-col justify-between gap-4">
-          <div class="space-y-3">
-            <div class="flex items-center justify-between">
-              <span class="font-mono text-xs text-sky-400">01 // ARCHITECTURE</span>
-              <span class="w-2 h-2 rounded-full bg-sky-400/70"></span>
-            </div>
-            <h2 class="text-lg font-semibold text-white">First-Principles Engineering</h2>
-            <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">
-              Deconstructing complex problems down to foundational data structures, clean abstractions, and verifiable retrieval pipelines rather than fragile wrappers.
-            </p>
-          </div>
-          <div class="pt-2 border-t border-white/[0.06] font-mono text-[11px] text-slate-500 flex items-center justify-between">
-            <span>STATUS: FOUNDATIONAL</span>
-            <span class="text-sky-400/80">SIGNAL →</span>
-          </div>
+        <div class="principle-card rounded-2xl border border-slate-200/90 bg-slate-50/70 p-6">
+          <div class="font-mono text-xs text-slate-400 mb-3">01 // FOUNDATION</div>
+          <h2 class="text-base font-semibold text-slate-900 mb-2">First-Principles Craft</h2>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            Deep technical mastery before public releases. Every system we ship will be built on solid fundamentals rather than fragile shortcuts.
+          </p>
         </div>
 
-        <!-- Pillar 02 -->
-        <div role="button" tabindex="0" class="pillar-card glass-surface rounded-2xl p-6 cursor-pointer select-none flex flex-col justify-between gap-4">
-          <div class="space-y-3">
-            <div class="flex items-center justify-between">
-              <span class="font-mono text-xs text-emerald-400">02 // SYSTEMS</span>
-              <span class="w-2 h-2 rounded-full bg-emerald-400/70"></span>
-            </div>
-            <h2 class="text-lg font-semibold text-white">Autonomous Workflows</h2>
-            <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">
-              Designing deterministic multi-step reasoning loops and tool-use architectures engineered to execute real-world tasks with measurable precision.
-            </p>
-          </div>
-          <div class="pt-2 border-t border-white/[0.06] font-mono text-[11px] text-slate-500 flex items-center justify-between">
-            <span>STATUS: IN LAB</span>
-            <span class="text-emerald-400/80">SIGNAL →</span>
-          </div>
+        <div class="principle-card rounded-2xl border border-slate-200/90 bg-slate-50/70 p-6">
+          <div class="font-mono text-xs text-slate-400 mb-3">02 // GROUNDING</div>
+          <h2 class="text-base font-semibold text-slate-900 mb-2">Real-World Bottlenecks</h2>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            The best products solve genuine friction observed in the field. We collect hard, unglamorous problems long before writing launch code.
+          </p>
         </div>
 
-        <!-- Pillar 03 -->
-        <div role="button" tabindex="0" class="pillar-card glass-surface rounded-2xl p-6 cursor-pointer select-none flex flex-col justify-between gap-4">
-          <div class="space-y-3">
-            <div class="flex items-center justify-between">
-              <span class="font-mono text-xs text-sky-400">03 // VELOCITY</span>
-              <span class="w-2 h-2 rounded-full bg-sky-400/70"></span>
-            </div>
-            <h2 class="text-lg font-semibold text-white">Relentless Execution</h2>
-            <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">
-              Every breakthrough begins at zero. Deep work, continuous learning, and shipping working systems one clean commit at a time.
-            </p>
-          </div>
-          <div class="pt-2 border-t border-white/[0.06] font-mono text-[11px] text-slate-500 flex items-center justify-between">
-            <span>STATUS: ACTIVE</span>
-            <span class="text-sky-400/80">SIGNAL →</span>
-          </div>
+        <div class="principle-card rounded-2xl border border-slate-200/90 bg-slate-50/70 p-6">
+          <div class="font-mono text-xs text-slate-400 mb-3">03 // HORIZON</div>
+          <h2 class="text-base font-semibold text-slate-900 mb-2">Patient Execution</h2>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            Operating with independence, capital discipline, and a multi-year timeline—so when KyGor steps out of stealth, it stays built to last.
+          </p>
         </div>
+
       </div>
     </section>
 
   </main>
 
-  <!-- Minimal Footer -->
-  <footer class="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3 font-mono text-xs text-slate-500">
-    <div>© 2026 KyGor // kygor.com</div>
-    <div class="flex items-center gap-4">
-      <button type="button" data-open-contact class="text-slate-300 hover:text-sky-300 transition-colors cursor-pointer">
-        Contact
-      </button>
-      <span>•</span>
-      <a href="https://github.com/atharvparit" target="_blank" rel="noopener noreferrer" class="hover:text-sky-300 transition-colors">GitHub</a>
-      <span>•</span>
-      <a href="https://linkedin.com/in/atharvparit" target="_blank" rel="noopener noreferrer" class="hover:text-sky-300 transition-colors">LinkedIn</a>
-    </div>
+  <!-- Pure Stealth Footer (100% Link-Free) -->
+  <footer class="relative z-10 w-full max-w-5xl mx-auto px-6 sm:px-10 py-8 border-t border-slate-200/80 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 font-mono">
+    <div>&copy; 2026 KyGor // kygor.com</div>
+    <div class="text-slate-400">All Rights Reserved &middot; Stealth Phase</div>
   </footer>
 
-  <!-- Interactive Canvas & Direct Form Delivery Script -->
+  <!-- Interactive Problem Statement & Inquiry Modal -->
+  <div
+    id="contactModal"
+    class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm overflow-y-auto"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modalTitle"
+  >
+    <div class="modal-panel relative w-full max-w-xl my-8 rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-2xl max-h-[90vh] overflow-y-auto">
+
+      <!-- Modal Header & Mode Switcher -->
+      <div class="flex items-start justify-between gap-4 mb-5">
+        <div>
+          <span id="modalTag" class="font-mono text-[11px] uppercase tracking-widest text-slate-500 block mb-1">
+            Research &amp; Talent Pipeline
+          </span>
+          <h3 id="modalTitle" class="text-xl font-semibold text-slate-950 tracking-tight">
+            Share a Problem or Refined Solution
+          </h3>
+        </div>
+        <button
+          type="button"
+          onclick="closeModal()"
+          aria-label="Close modal"
+          class="text-slate-400 hover:text-slate-900 p-1.5 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
+        >
+          &#x2715;
+        </button>
+      </div>
+
+      <!-- Tab Toggle -->
+      <div class="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-slate-100 border border-slate-200/80 mb-5">
+        <button
+          type="button"
+          id="tabProblem"
+          onclick="switchMode('problem')"
+          class="py-2 px-3 rounded-lg text-xs font-medium transition-colors cursor-pointer bg-white text-slate-950 shadow-xs"
+        >
+          Problem / Solution
+        </button>
+        <button
+          type="button"
+          id="tabInquiry"
+          onclick="switchMode('inquiry')"
+          class="py-2 px-3 rounded-lg text-xs font-medium transition-colors cursor-pointer text-slate-600 hover:text-slate-950"
+        >
+          General Inquiry
+        </button>
+      </div>
+
+      <p id="modalDesc" class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-5">
+        Describe a broken workflow, manual bottleneck, or refined solution you’ve thought through. Standout contributors get invited to collaborate—or join KyGor’s team. Leave your email if you’d like to be considered.
+      </p>
+
+      <!-- Form -->
+      <form id="kygorForm" class="space-y-4">
+        <input type="hidden" id="submissionType" name="Submission_Type" value="Problem / Solution" />
+        <input type="text" name="_honey" tabindex="-1" autocomplete="off" class="hidden" />
+
+        <!-- Problem-Only Fields Wrapper -->
+        <div id="problemFields" class="space-y-4">
+          <!-- Domain Category -->
+          <div>
+            <label for="domainSelect" class="block text-xs font-medium text-slate-700 mb-1.5">
+              Domain / Industry Area
+            </label>
+            <select
+              id="domainSelect"
+              name="Domain_Area"
+              class="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 py-2.5 text-sm text-slate-900 focus:bg-white focus:border-slate-900 focus:outline-none transition-colors"
+            >
+              <option value="Software & Developer Tools">Software &amp; Developer Tools</option>
+              <option value="AI, Data & Automation">AI, Data &amp; Automation</option>
+              <option value="Business & Operations">Business &amp; Operations</option>
+              <option value="Consumer & Daily Workflow">Consumer &amp; Daily Workflow</option>
+              <option value="Infrastructure & Cloud">Infrastructure &amp; Cloud</option>
+              <option value="Other / Cross-Industry">Other / Cross-Industry</option>
+            </select>
+          </div>
+
+          <!-- Country & Current Stage (2-Column Grid) -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div>
+              <label for="countrySelect" class="block text-xs font-medium text-slate-700 mb-1.5">
+                Country <span class="text-slate-400 font-normal">(Optional)</span>
+              </label>
+              <select
+                id="countrySelect"
+                name="Country"
+                class="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 py-2.5 text-sm text-slate-900 focus:bg-white focus:border-slate-900 focus:outline-none transition-colors"
+              >
+                <option value="Not specified">Prefer not to say</option>
+                <option value="India">India</option>
+                <option value="United States">United States</option>
+                <option value="United Kingdom">United Kingdom</option>
+                <option value="Canada">Canada</option>
+                <option value="Germany">Germany</option>
+                <option value="Singapore">Singapore</option>
+                <option value="Australia">Australia</option>
+                <option value="United Arab Emirates">United Arab Emirates</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="stageSelect" class="block text-xs font-medium text-slate-700 mb-1.5">
+                Current Stage <span class="text-slate-400 font-normal">(Optional)</span>
+              </label>
+              <select
+                id="stageSelect"
+                name="Current_Stage"
+                class="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 py-2.5 text-sm text-slate-900 focus:bg-white focus:border-slate-900 focus:outline-none transition-colors"
+              >
+                <option value="Not specified">Prefer not to say</option>
+                <option value="Student">Student</option>
+                <option value="Recent Graduate">Recent Graduate</option>
+                <option value="Working Professional (1–3 yrs)">Working Professional (1–3 yrs)</option>
+                <option value="Experienced Builder / Senior (3+ yrs)">Experienced Builder / Senior (3+ yrs)</option>
+                <option value="Founder / Business Owner">Founder / Business Owner</option>
+                <option value="Researcher / Academic">Researcher / Academic</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Message / Problem Textarea -->
+        <div>
+          <label id="messageLabel" for="messageInput" class="block text-xs font-medium text-slate-700 mb-1.5">
+            The Problem or Refined Solution <span class="text-slate-950">*</span>
+          </label>
+          <textarea
+            id="messageInput"
+            name="Message"
+            rows="3"
+            required
+            placeholder="Describe the broken workflow, bottleneck, or your refined idea to fix it..."
+            class="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:border-slate-900 focus:outline-none resize-none transition-colors"
+          ></textarea>
+        </div>
+
+        <!-- Problem-Only Discovery Fields: Workaround & Friction Toll -->
+        <div id="discoveryFields" class="space-y-4">
+          <!-- Current Workaround -->
+          <div>
+            <label for="workaroundInput" class="block text-xs font-medium text-slate-700 mb-1.5">
+              Current Workaround <span class="text-slate-400 font-normal">(How do you currently solve or patch this?)</span>
+            </label>
+            <input
+              type="text"
+              id="workaroundInput"
+              name="Current_Workaround"
+              placeholder="e.g., Manual spreadsheets, copy-pasting across 3 apps, custom scripts..."
+              class="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:border-slate-900 focus:outline-none transition-colors"
+            />
+          </div>
+
+          <!-- Emotional or Time Toll -->
+          <div>
+            <span class="block text-xs font-medium text-slate-700 mb-2">
+              What makes this so frustrating? <span class="text-slate-400 font-normal">(Pick any that apply)</span>
+            </span>
+            <div id="tollOptions" class="flex flex-wrap gap-2">
+              <button
+                type="button"
+                data-toll="Takes too much time"
+                onclick="toggleToll(this)"
+                class="toll-pill px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-xs text-slate-700 hover:border-slate-300 transition-colors cursor-pointer"
+              >
+                Takes too much time
+              </button>
+              <button
+                type="button"
+                data-toll="Too confusing / overwhelming"
+                onclick="toggleToll(this)"
+                class="toll-pill px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-xs text-slate-700 hover:border-slate-300 transition-colors cursor-pointer"
+              >
+                Too confusing / overwhelming
+              </button>
+              <button
+                type="button"
+                data-toll="Existing apps are too bloated / expensive"
+                onclick="toggleToll(this)"
+                class="toll-pill px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-xs text-slate-700 hover:border-slate-300 transition-colors cursor-pointer"
+              >
+                Existing apps are too bloated / expensive
+              </button>
+              <button
+                type="button"
+                data-toll="Easy to forget"
+                onclick="toggleToll(this)"
+                class="toll-pill px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-xs text-slate-700 hover:border-slate-300 transition-colors cursor-pointer"
+              >
+                Easy to forget
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Optional Email Field -->
+        <div>
+          <label id="emailLabel" for="emailInput" class="block text-xs font-medium text-slate-700 mb-1.5">
+            Your Email <span class="text-slate-400 font-normal">(Optional &mdash; required only if you want us to reach out / consider you for our team)</span>
+          </label>
+          <input
+            type="email"
+            id="emailInput"
+            name="Sender_Email"
+            placeholder="you@domain.com"
+            class="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:border-slate-900 focus:outline-none transition-colors"
+          />
+        </div>
+
+        <!-- Status Feedback -->
+        <div id="formStatus" class="hidden rounded-xl px-3.5 py-2.5 text-xs"></div>
+
+        <!-- Submit Button -->
+        <div class="pt-1 flex items-center justify-end gap-3">
+          <button
+            type="button"
+            onclick="closeModal()"
+            class="px-4 py-2.5 rounded-xl text-xs font-medium text-slate-500 hover:text-slate-900 transition-colors cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            id="submitBtn"
+            class="px-5 py-2.5 rounded-xl bg-slate-950 text-white text-xs font-semibold hover:bg-slate-800 transition-colors cursor-pointer disabled:opacity-50"
+          >
+            Transmit to KyGor
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
-    (function () {
-      'use strict';
+    const modal = document.getElementById('contactModal');
+    const form = document.getElementById('kygorForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const formStatus = document.getElementById('formStatus');
 
-      /* =======================================================================
-         1. TOAST NOTIFICATION HELPER
-         ======================================================================= */
-      const toastEl = document.getElementById('toast');
-      const toastTextEl = document.getElementById('toast-text');
-      let toastTimer = null;
+    const tabProblem = document.getElementById('tabProblem');
+    const tabInquiry = document.getElementById('tabInquiry');
+    const modalTag = document.getElementById('modalTag');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDesc = document.getElementById('modalDesc');
+    const problemFields = document.getElementById('problemFields');
+    const discoveryFields = document.getElementById('discoveryFields');
+    const messageLabel = document.getElementById('messageLabel');
+    const messageInput = document.getElementById('messageInput');
+    const emailLabel = document.getElementById('emailLabel');
+    const emailInput = document.getElementById('emailInput');
+    const submissionType = document.getElementById('submissionType');
 
-      function showToast(message) {
-        if (!toastEl || !toastTextEl) return;
-        toastTextEl.textContent = message;
-        toastEl.classList.remove('translate-y-20', 'opacity-0');
-        toastEl.classList.add('translate-y-0', 'opacity-100');
-        if (toastTimer) clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => {
-          toastEl.classList.remove('translate-y-0', 'opacity-100');
-          toastEl.classList.add('translate-y-20', 'opacity-0');
-        }, 3200);
+    // Uses your activated FormSubmit token so your Gmail stays hidden from HTML source
+    const FORMSUBMIT_ENDPOINT = 'https://formsubmit.co/ajax/e3267e3491286a17ae63e4f5e95e785a';
+
+    function toggleToll(btn) {
+      const selected = btn.getAttribute('data-selected') === 'true';
+      if (selected) {
+        btn.setAttribute('data-selected', 'false');
+        btn.className = 'toll-pill px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-xs text-slate-700 hover:border-slate-300 transition-colors cursor-pointer';
+      } else {
+        btn.setAttribute('data-selected', 'true');
+        btn.className = 'toll-pill px-3 py-1.5 rounded-lg border border-slate-950 bg-slate-950 text-xs text-white font-medium transition-colors cursor-pointer';
       }
+    }
 
-      /* =======================================================================
-         2. CONTACT MODAL & DIRECT EMAIL DELIVERY (FORMSUBMIT AJAX + FALLBACK)
-         =======================================================================
-         NOTE ON ACTIVATION / OPTIONAL ALTERNATIVE:
-         - On the very first form submission sent to FormSubmit, check your
-           hellokygor@gmail.com inbox (and Spam folder) for a one-time
-           "Activate FormSubmit" confirmation email and click the link inside.
-         - Alternatively, you can swap the endpoint below to Web3Forms
-           (https://api.web3forms.com/submit) with your free access_key.
-         ======================================================================= */
-      const contactModal = document.getElementById('contact-modal');
-      const closeContactBtn = document.getElementById('close-contact-btn');
-      const cancelContactBtn = document.getElementById('cancel-contact-btn');
-      const contactForm = document.getElementById('contact-form');
-      const formFeedback = document.getElementById('form-feedback');
-      const sendBtn = document.getElementById('send-message-btn');
-      const sendSpinner = document.getElementById('send-spinner');
-      const sendBtnLabel = document.getElementById('send-btn-label');
-      const sendArrow = document.getElementById('send-arrow');
-
-      const DESTINATION_EMAIL = 'hellokygor@gmail.com';
-      const FORMSUBMIT_ENDPOINT = 'https://formsubmit.co/ajax/' + DESTINATION_EMAIL;
-
-      function openContactModal() {
-        if (!contactModal) return;
-        formFeedback.classList.add('hidden');
-        contactModal.classList.remove('hidden');
-        contactModal.classList.add('flex');
-        setTimeout(() => {
-          document.getElementById('sender-name')?.focus();
-        }, 60);
-        fireGlobalPulses();
-      }
-
-      function closeContactModal() {
-        if (!contactModal) return;
-        contactModal.classList.add('hidden');
-        contactModal.classList.remove('flex');
-      }
-
-      document.querySelectorAll('[data-open-contact]').forEach((btn) => {
-        btn.addEventListener('click', openContactModal);
+    function resetTolls() {
+      document.querySelectorAll('.toll-pill').forEach((btn) => {
+        btn.setAttribute('data-selected', 'false');
+        btn.className = 'toll-pill px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-xs text-slate-700 hover:border-slate-300 transition-colors cursor-pointer';
       });
+    }
 
-      closeContactBtn?.addEventListener('click', closeContactModal);
-      cancelContactBtn?.addEventListener('click', closeContactModal);
-      contactModal?.addEventListener('click', (e) => {
-        if (e.target === contactModal) closeContactModal();
-      });
-      window.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeContactModal();
-      });
-
-      function setFormStatus(type, message) {
-        formFeedback.classList.remove('hidden', 'bg-red-500/15', 'border-red-500/30', 'text-red-300', 'bg-emerald-500/15', 'border-emerald-500/30', 'text-emerald-300', 'border');
-        formFeedback.classList.add('border');
-        if (type === 'error') {
-          formFeedback.classList.add('bg-red-500/15', 'border-red-500/30', 'text-red-300');
-        } else {
-          formFeedback.classList.add('bg-emerald-500/15', 'border-emerald-500/30', 'text-emerald-300');
-        }
-        formFeedback.textContent = message;
+    function switchMode(mode) {
+      formStatus.classList.add('hidden');
+      if (mode === 'problem') {
+        tabProblem.className = 'py-2 px-3 rounded-lg text-xs font-medium transition-colors cursor-pointer bg-white text-slate-950 shadow-xs';
+        tabInquiry.className = 'py-2 px-3 rounded-lg text-xs font-medium transition-colors cursor-pointer text-slate-600 hover:text-slate-950';
+        modalTag.textContent = 'Research & Talent Pipeline';
+        modalTitle.textContent = 'Share a Problem or Refined Solution';
+        modalDesc.textContent = 'Describe a broken workflow, manual bottleneck, or refined solution you’ve thought through. Standout contributors get invited to collaborate—or join KyGor’s team. Leave your email if you’d like to be considered.';
+        problemFields.classList.remove('hidden');
+        discoveryFields.classList.remove('hidden');
+        submissionType.value = 'Problem / Solution';
+        messageLabel.innerHTML = 'The Problem or Refined Solution <span class="text-slate-950">*</span>';
+        messageInput.placeholder = 'Describe the broken workflow, bottleneck, or your refined idea to fix it...';
+        emailLabel.innerHTML = 'Your Email <span class="text-slate-400 font-normal">(Optional &mdash; required only if you want us to reach out / consider you for our team)</span>';
+        emailInput.required = false;
+      } else {
+        tabInquiry.className = 'py-2 px-3 rounded-lg text-xs font-medium transition-colors cursor-pointer bg-white text-slate-950 shadow-xs';
+        tabProblem.className = 'py-2 px-3 rounded-lg text-xs font-medium transition-colors cursor-pointer text-slate-600 hover:text-slate-950';
+        modalTag.textContent = 'Direct Channel';
+        modalTitle.textContent = 'General Inquiry';
+        modalDesc.textContent = 'Have a question or want to connect quietly? Leave a note and an email address where we can reach you.';
+        problemFields.classList.add('hidden');
+        discoveryFields.classList.add('hidden');
+        submissionType.value = 'General Inquiry';
+        messageLabel.innerHTML = 'Your Message <span class="text-slate-950">*</span>';
+        messageInput.placeholder = 'Write your message here...';
+        emailLabel.innerHTML = 'Your Email <span class="text-slate-950">*</span>';
+        emailInput.required = true;
       }
+    }
 
-      function setSendingState(isSending) {
-        sendBtn.disabled = isSending;
-        if (isSending) {
-          sendSpinner.classList.remove('hidden');
-          sendArrow.classList.add('hidden');
-          sendBtnLabel.textContent = 'Transmitting...';
-          sendBtn.classList.add('opacity-80', 'cursor-not-allowed');
-        } else {
-          sendSpinner.classList.add('hidden');
-          sendArrow.classList.remove('hidden');
-          sendBtnLabel.textContent = 'Send Message';
-          sendBtn.classList.remove('opacity-80', 'cursor-not-allowed');
-        }
-      }
+    function openModal(mode = 'problem') {
+      switchMode(mode);
+      modal.classList.add('active');
+      setTimeout(() => messageInput.focus(), 150);
+    }
 
-      contactForm?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        formFeedback.classList.add('hidden');
+    function closeModal() {
+      modal.classList.remove('active');
+    }
 
-        const name = document.getElementById('sender-name').value.trim();
-        const email = document.getElementById('sender-email').value.trim();
-        const intent = document.getElementById('sender-intent').value;
-        const message = document.getElementById('sender-message').value.trim();
-        const honey = contactForm.querySelector('input[name="_honey"]')?.value || '';
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
 
-        if (honey) return; // Ignore bot submissions
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('active')) closeModal();
+    });
 
-        if (!name || !email || !message) {
-          setFormStatus('error', 'Please fill in your name, email address, and message.');
-          return;
-        }
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const honey = form.querySelector('input[name="_honey"]')?.value || '';
+      if (honey) return;
 
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-          setFormStatus('error', 'Please enter a valid email address.');
-          return;
-        }
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Transmitting...';
+      formStatus.classList.add('hidden');
 
-        setSendingState(true);
+      const senderEmail = emailInput.value.trim();
+      const isProblem = submissionType.value === 'Problem / Solution';
+      const selectedTolls = Array.from(document.querySelectorAll('.toll-pill[data-selected="true"]'))
+        .map((btn) => btn.getAttribute('data-toll'));
 
-        try {
-          const response = await fetch(FORMSUBMIT_ENDPOINT, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            },
-            body: JSON.stringify({
-              name: name,
-              email: email,
-              _replyto: email,
-              _subject: `[KyGor Inquiry] ${intent} — from ${name}`,
-              intent: intent,
-              message: message,
-              _template: 'table'
-            })
-          });
-
-          const result = await response.json().catch(() => ({}));
-
-          if (response.ok && (result.success === 'true' || result.success === true || response.status === 200)) {
-            setFormStatus('success', 'Message delivered successfully. We will respond shortly.');
-            showToast('Message delivered to KyGor');
-            fireGlobalPulses();
-            contactForm.reset();
-            setTimeout(() => {
-              closeContactModal();
-            }, 1800);
-          } else {
-            throw new Error(result.message || 'Endpoint returned non-200 status');
-          }
-        } catch (_) {
-          // Automatic mailto: fallback if offline or blocked by strict network extensions
-          const subjectEncoded = encodeURIComponent(`[KyGor Inquiry] ${intent} — ${name}`);
-          const bodyEncoded = encodeURIComponent(`Name: ${name}\nReply Email: ${email}\nIntent: ${intent}\n\n${message}`);
-          setFormStatus('success', 'Opening your default mail client to complete delivery...');
-          window.location.href = `mailto:${DESTINATION_EMAIL}?subject=${subjectEncoded}&body=${bodyEncoded}`;
-          setTimeout(() => {
-            closeContactModal();
-          }, 1500);
-        } finally {
-          setSendingState(false);
-        }
-      });
-
-      /* =======================================================================
-         3. INTERACTIVE PILLAR CARD SELECTION & PULSE TRIGGER
-         ======================================================================= */
-      const pillarCards = document.querySelectorAll('.pillar-card');
-      pillarCards.forEach((card) => {
-        const activateCard = () => {
-          pillarCards.forEach((c) => c.classList.remove('pillar-selected'));
-          card.classList.add('pillar-selected');
-          fireGlobalPulses();
-        };
-        card.addEventListener('click', activateCard);
-        card.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            activateCard();
-          }
-        });
-      });
-
-      /* =======================================================================
-         4. INTERACTIVE NEURAL NETWORK PARTICLE CANVAS
-         ======================================================================= */
-      const canvas = document.getElementById('neural-canvas');
-      const ctx = canvas.getContext('2d');
-      let width = 0;
-      let height = 0;
-      let nodes = [];
-      let pulses = [];
-      const pointer = { x: null, y: null, radius: 170 };
-
-      function resizeCanvas() {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
-        const targetCount = Math.min(82, Math.max(32, Math.floor((width * height) / 18500)));
-        nodes = [];
-        for (let i = 0; i < targetCount; i++) {
-          const isCyan = Math.random() > 0.62;
-          nodes.push({
-            x: Math.random() * width,
-            y: Math.random() * height,
-            vx: (Math.random() - 0.5) * 0.42,
-            vy: (Math.random() - 0.5) * 0.42,
-            r: isCyan ? 2.2 : 1.5,
-            color: isCyan ? '#38BDF8' : '#10B981'
-          });
-        }
-      }
-
-      function spawnPulsesAt(ox, oy) {
-        if (!nodes.length) return;
-        const nearest = nodes
-          .map((n, i) => ({ i, d: Math.hypot(n.x - ox, n.y - oy) }))
-          .sort((a, b) => a.d - b.d)
-          .slice(0, 4);
-
-        nearest.forEach(({ i }) => {
-          const src = nodes[i];
-          nodes.forEach((dst) => {
-            if (src === dst) return;
-            if (Math.hypot(src.x - dst.x, src.y - dst.y) < 190 && pulses.length < 60) {
-              pulses.push({
-                from: src,
-                to: dst,
-                t: 0,
-                speed: 0.024 + Math.random() * 0.018,
-                color: Math.random() > 0.35 ? '#38BDF8' : '#10B981'
-              });
-            }
-          });
-        });
-      }
-
-      function fireGlobalPulses() {
-        for (let k = 0; k < 3; k++) {
-          const n = nodes[Math.floor(Math.random() * nodes.length)];
-          if (n) spawnPulsesAt(n.x, n.y);
-        }
-      }
-
-      document.getElementById('pulse-btn')?.addEventListener('click', () => {
-        fireGlobalPulses();
-        showToast('Neural network pulse propagated');
-      });
-
-      window.addEventListener('mousemove', (e) => {
-        pointer.x = e.clientX;
-        pointer.y = e.clientY;
-      }, { passive: true });
-
-      window.addEventListener('mouseleave', () => {
-        pointer.x = null;
-        pointer.y = null;
-      });
-
-      window.addEventListener('click', (e) => {
-        spawnPulsesAt(e.clientX, e.clientY);
-      });
-
-      window.addEventListener('touchstart', (e) => {
-        if (e.touches && e.touches[0]) {
-          spawnPulsesAt(e.touches[0].clientX, e.touches[0].clientY);
-        }
-      }, { passive: true });
-
-      window.addEventListener('resize', resizeCanvas);
-
-      function renderLoop() {
-        ctx.clearRect(0, 0, width, height);
-        const maxDist = width < 640 ? 125 : 165;
-
-        for (let i = 0; i < nodes.length; i++) {
-          const a = nodes[i];
-          a.x += a.vx;
-          a.y += a.vy;
-
-          if (a.x < 0 || a.x > width) a.vx *= -1;
-          if (a.y < 0 || a.y > height) a.vy *= -1;
-
-          if (pointer.x !== null && pointer.y !== null) {
-            const dx = pointer.x - a.x;
-            const dy = pointer.y - a.y;
-            const dist = Math.hypot(dx, dy);
-            if (dist < pointer.radius && dist > 1) {
-              a.x -= (dx / dist) * 0.32;
-              a.y -= (dy / dist) * 0.32;
-            }
-          }
-
-          for (let j = i + 1; j < nodes.length; j++) {
-            const b = nodes[j];
-            const dist = Math.hypot(a.x - b.x, a.y - b.y);
-            if (dist < maxDist) {
-              const alpha = (1 - dist / maxDist) * 0.22;
-              ctx.beginPath();
-              ctx.strokeStyle = `rgba(56, 189, 248, ${alpha.toFixed(3)})`;
-              ctx.lineWidth = 0.8;
-              ctx.moveTo(a.x, a.y);
-              ctx.lineTo(b.x, b.y);
-              ctx.stroke();
-            }
-          }
-
-          if (pointer.x !== null && pointer.y !== null) {
-            const pDist = Math.hypot(a.x - pointer.x, a.y - pointer.y);
-            if (pDist < pointer.radius) {
-              const alpha = (1 - pDist / pointer.radius) * 0.4;
-              ctx.beginPath();
-              ctx.strokeStyle = `rgba(16, 185, 129, ${alpha.toFixed(3)})`;
-              ctx.lineWidth = 1;
-              ctx.moveTo(a.x, a.y);
-              ctx.lineTo(pointer.x, pointer.y);
-              ctx.stroke();
-            }
-          }
-
-          ctx.beginPath();
-          ctx.arc(a.x, a.y, a.r, 0, Math.PI * 2);
-          ctx.fillStyle = a.color;
-          ctx.fill();
-        }
-
-        for (let p = pulses.length - 1; p >= 0; p--) {
-          const pulse = pulses[p];
-          pulse.t += pulse.speed;
-          if (pulse.t >= 1) {
-            pulses.splice(p, 1);
-            continue;
-          }
-          const px = pulse.from.x + (pulse.to.x - pulse.from.x) * pulse.t;
-          const py = pulse.from.y + (pulse.to.y - pulse.from.y) * pulse.t;
-
-          ctx.beginPath();
-          ctx.arc(px, py, 2.4, 0, Math.PI * 2);
-          ctx.fillStyle = pulse.color;
-          ctx.shadowBlur = 9;
-          ctx.shadowColor = pulse.color;
-          ctx.fill();
-          ctx.shadowBlur = 0;
-        }
-
-        if (Math.random() < 0.015 && pulses.length < 18) {
-          fireGlobalPulses();
-        }
-
-        requestAnimationFrame(renderLoop);
-      }
-
-      window.onload = function () {
-        resizeCanvas();
-        renderLoop();
+      const payload = {
+        _subject: `[KyGor] New ${submissionType.value}`,
+        _template: 'table',
+        Submission_Type: submissionType.value,
+        Domain_Area: isProblem ? document.getElementById('domainSelect').value : 'N/A',
+        Country: isProblem ? document.getElementById('countrySelect').value : 'N/A',
+        Current_Stage: isProblem ? document.getElementById('stageSelect').value : 'N/A',
+        Message: messageInput.value.trim(),
+        Current_Workaround: isProblem ? (document.getElementById('workaroundInput').value.trim() || 'Not specified') : 'N/A',
+        Frustration_Points: isProblem ? (selectedTolls.length ? selectedTolls.join(', ') : 'None selected') : 'N/A',
+        Sender_Email: senderEmail || 'Anonymous'
       };
-    })();
+
+      if (senderEmail) {
+        payload._replyto = senderEmail;
+      }
+
+      try {
+        const res = await fetch(FORMSUBMIT_ENDPOINT, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) throw new Error('Network response was not ok');
+
+        formStatus.className = 'rounded-xl px-3.5 py-2.5 text-xs bg-emerald-50 border border-emerald-200 text-emerald-800';
+        formStatus.textContent = 'Received. Thank you for contributing to KyGor’s research log.';
+        formStatus.classList.remove('hidden');
+        form.reset();
+        resetTolls();
+
+        setTimeout(() => {
+          closeModal();
+          formStatus.classList.add('hidden');
+        }, 1800);
+      } catch (err) {
+        formStatus.className = 'rounded-xl px-3.5 py-2.5 text-xs bg-rose-50 border border-rose-200 text-rose-800';
+        formStatus.textContent = 'Transmission interrupted. Please check your connection and try again.';
+        formStatus.classList.remove('hidden');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Transmit to KyGor';
+      }
+    });
   </script>
 </body>
 </html>
