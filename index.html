@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,9 +7,11 @@
   <meta name="description" content="KyGor — Quietly engineering foundational software and systems for the long term. Coming soon." />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://kygor.com/" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -18,12 +20,6 @@
           fontFamily: {
             sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
             mono: ['JetBrains Mono', 'monospace'],
-          },
-          colors: {
-            paper: '#FFFFFF',
-            softgray: '#F8FAFC',
-            ink: '#0F172A',
-            muted: '#475569',
           }
         }
       }
@@ -37,28 +33,27 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
-    /* Subtle architectural grid on crisp white background */
-    .bg-grid-light {
+    /* Subtle light architectural grid background */
+    .bg-grid {
       background-size: 48px 48px;
-      background-image:
+      background-image: 
         linear-gradient(to right, rgba(15, 23, 42, 0.035) 1px, transparent 1px),
         linear-gradient(to bottom, rgba(15, 23, 42, 0.035) 1px, transparent 1px);
-      mask-image: radial-gradient(ellipse 85% 75% at 50% 30%, #000 35%, transparent 100%);
-      -webkit-mask-image: radial-gradient(ellipse 85% 75% at 50% 30%, #000 35%, transparent 100%);
+      mask-image: radial-gradient(ellipse 85% 75% at 50% 30%, #000 45%, transparent 100%);
+      -webkit-mask-image: radial-gradient(ellipse 85% 75% at 50% 30%, #000 45%, transparent 100%);
     }
 
-    .soft-wash {
-      background: radial-gradient(circle at 50% 0%, rgba(241, 245, 249, 0.9) 0%, rgba(255, 255, 255, 0) 70%);
+    .ambient-glow {
+      background: radial-gradient(circle at 50% 0%, rgba(14, 165, 233, 0.06) 0%, rgba(16, 185, 129, 0.03) 35%, transparent 70%);
     }
 
     .principle-card {
-      transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease, background-color 0.22s ease;
+      transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
     }
     .principle-card:hover {
       transform: translateY(-2px);
       border-color: #CBD5E1;
-      background-color: #FFFFFF;
-      box-shadow: 0 12px 28px -12px rgba(15, 23, 42, 0.08);
+      box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05);
     }
 
     /* Modal transitions */
@@ -80,52 +75,52 @@
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between relative overflow-x-hidden bg-white text-slate-900 selection:bg-slate-900 selection:text-white">
+<body class="min-h-screen flex flex-col justify-between relative overflow-x-hidden selection:bg-slate-900 selection:text-white">
 
-  <!-- Subtle Light Background Layers -->
-  <div class="fixed inset-0 soft-wash pointer-events-none"></div>
-  <div class="fixed inset-0 bg-grid-light pointer-events-none"></div>
+  <!-- Background Layers -->
+  <div class="fixed inset-0 ambient-glow pointer-events-none"></div>
+  <div class="fixed inset-0 bg-grid pointer-events-none"></div>
 
-  <!-- Minimalist Pure-Typographic Header -->
+  <!-- Minimalist Uniform-Weight Typographic Header -->
   <header class="relative z-10 w-full max-w-5xl mx-auto px-6 sm:px-10 pt-8 pb-4 flex items-center justify-between">
-    <div class="flex items-baseline gap-0.5 select-none">
-      <span class="text-2xl sm:text-[26px] font-bold tracking-[-0.04em] text-slate-950">Ky</span><span class="text-2xl sm:text-[26px] font-light tracking-[-0.03em] text-slate-500">Gor</span>
+    <div class="select-none">
+      <span class="text-2xl sm:text-[26px] font-bold tracking-[-0.035em] text-slate-900">KyGor</span>
     </div>
 
     <div class="flex items-center gap-2.5 px-3 py-1 rounded-full border border-slate-200 bg-slate-50/90 backdrop-blur-sm">
       <span class="relative flex h-2 w-2">
-        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
-        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
       </span>
       <span class="font-mono text-[11px] tracking-widest uppercase text-slate-600">Stealth // Est. 2026</span>
     </div>
   </header>
 
   <!-- Main Content -->
-  <main class="relative z-10 w-full max-w-5xl mx-auto px-6 sm:px-10 my-auto py-16 sm:py-24">
-
+  <main class="relative z-10 w-full max-w-5xl mx-auto px-6 sm:px-10 my-auto py-14 sm:py-20">
+    
     <!-- Hero Section -->
     <section class="max-w-2xl">
       <p class="font-mono text-xs uppercase tracking-[0.22em] text-slate-500 mb-5">
         Coming Soon &mdash; kygor.com
       </p>
 
-      <h1 class="text-4xl sm:text-6xl font-semibold tracking-[-0.035em] text-slate-950 leading-[1.08] mb-6">
+      <h1 class="text-4xl sm:text-6xl font-bold tracking-[-0.035em] text-slate-900 leading-[1.08] mb-6">
         Built in silence.<br />
-        <span class="text-slate-500 font-normal">Engineered for the long term.</span>
+        <span class="text-slate-500 font-semibold">Engineered for the long term.</span>
       </h1>
 
-      <p class="text-base sm:text-lg text-slate-600 leading-relaxed font-normal mb-10 max-w-xl">
+      <p class="text-base sm:text-lg text-slate-600 leading-relaxed font-normal mb-8 max-w-xl">
         Great software isn’t rushed to market for applause. We are spending the quiet years mastering core engineering, studying real-world industry bottlenecks, and building enduring systems from first principles. No noise, no premature hype—just disciplined execution when the foundation is ready.
       </p>
 
-      <!-- Highlighted Collaboration Callout -->
-      <div class="mb-7 max-w-xl rounded-2xl border border-emerald-200/80 bg-emerald-50/70 px-4 py-3.5 flex items-start gap-3">
-        <span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white font-mono text-[11px] font-semibold">
-          &#9733;
+      <!-- Highlighted Collaboration & Problem Statement Callout -->
+      <div class="mb-8 rounded-xl border border-emerald-200/90 bg-emerald-50/70 px-4 py-3.5 sm:px-5 sm:py-4 flex items-start gap-3.5 max-w-xl">
+        <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white font-mono text-xs font-bold">
+          +
         </span>
-        <p class="text-xs sm:text-sm text-slate-800 leading-relaxed">
-          <span class="font-semibold text-slate-950">Have a sharp eye for broken workflows?</span> Share your problems or refined solutions with us and get a chance to collaborate directly—or earn a spot on <span class="font-semibold text-emerald-900">KyGor’s core team</span> when we launch.
+        <p class="text-xs sm:text-sm text-slate-800 leading-relaxed font-medium">
+          <span class="font-semibold text-emerald-900">Build with us:</span> Share your real-world problems or refined solutions—standout contributors get the chance to collaborate directly with our team or join KyGor as we scale.
         </p>
       </div>
 
@@ -134,16 +129,16 @@
         <button
           type="button"
           onclick="openModal('problem')"
-          class="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-slate-950 text-white font-medium text-sm hover:bg-slate-800 transition-colors cursor-pointer shadow-sm"
+          class="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-lg bg-slate-900 text-white font-medium text-sm hover:bg-slate-800 transition-colors cursor-pointer shadow-sm"
         >
-          <span>Share a Problem / Solution</span>
-          <span aria-hidden="true" class="text-slate-300">&rarr;</span>
+          <span>Share a Problem Statement</span>
+          <span aria-hidden="true" class="text-slate-400">&rarr;</span>
         </button>
 
         <button
           type="button"
           onclick="openModal('inquiry')"
-          class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl border border-slate-200 bg-white text-slate-700 font-medium text-sm hover:border-slate-300 hover:text-slate-950 hover:bg-slate-50 transition-colors cursor-pointer"
+          class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg border border-slate-300 bg-white text-slate-700 font-medium text-sm hover:border-slate-400 hover:text-slate-950 hover:bg-slate-50 transition-colors cursor-pointer"
         >
           <span>General Inquiry</span>
         </button>
@@ -153,8 +148,8 @@
     <!-- Quiet Operating Principles -->
     <section class="mt-20 sm:mt-24 pt-12 border-t border-slate-200/80">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-
-        <div class="principle-card rounded-2xl border border-slate-200/90 bg-slate-50/70 p-6">
+        
+        <div class="principle-card rounded-xl border border-slate-200/90 bg-slate-50/60 p-6">
           <div class="font-mono text-xs text-slate-400 mb-3">01 // FOUNDATION</div>
           <h2 class="text-base font-semibold text-slate-900 mb-2">First-Principles Craft</h2>
           <p class="text-sm text-slate-600 leading-relaxed">
@@ -162,7 +157,7 @@
           </p>
         </div>
 
-        <div class="principle-card rounded-2xl border border-slate-200/90 bg-slate-50/70 p-6">
+        <div class="principle-card rounded-xl border border-slate-200/90 bg-slate-50/60 p-6">
           <div class="font-mono text-xs text-slate-400 mb-3">02 // GROUNDING</div>
           <h2 class="text-base font-semibold text-slate-900 mb-2">Real-World Bottlenecks</h2>
           <p class="text-sm text-slate-600 leading-relaxed">
@@ -170,7 +165,7 @@
           </p>
         </div>
 
-        <div class="principle-card rounded-2xl border border-slate-200/90 bg-slate-50/70 p-6">
+        <div class="principle-card rounded-xl border border-slate-200/90 bg-slate-50/60 p-6">
           <div class="font-mono text-xs text-slate-400 mb-3">03 // HORIZON</div>
           <h2 class="text-base font-semibold text-slate-900 mb-2">Patient Execution</h2>
           <p class="text-sm text-slate-600 leading-relaxed">
@@ -184,7 +179,7 @@
   </main>
 
   <!-- Pure Stealth Footer (100% Link-Free) -->
-  <footer class="relative z-10 w-full max-w-5xl mx-auto px-6 sm:px-10 py-8 border-t border-slate-200/80 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 font-mono">
+  <footer class="relative z-10 w-full max-w-5xl mx-auto px-6 sm:px-10 py-8 border-t border-slate-200/70 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 font-mono">
     <div>&copy; 2026 KyGor // kygor.com</div>
     <div class="text-slate-400">All Rights Reserved &middot; Stealth Phase</div>
   </footer>
@@ -192,21 +187,21 @@
   <!-- Interactive Problem Statement & Inquiry Modal -->
   <div
     id="contactModal"
-    class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm overflow-y-auto"
+    class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/45 backdrop-blur-xs overflow-y-auto"
     role="dialog"
     aria-modal="true"
     aria-labelledby="modalTitle"
   >
     <div class="modal-panel relative w-full max-w-xl my-8 rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-2xl max-h-[90vh] overflow-y-auto">
-
-      <!-- Modal Header & Mode Switcher -->
+      
+      <!-- Modal Header -->
       <div class="flex items-start justify-between gap-4 mb-5">
         <div>
-          <span id="modalTag" class="font-mono text-[11px] uppercase tracking-widest text-slate-500 block mb-1">
+          <span id="modalTag" class="font-mono text-[11px] uppercase tracking-widest text-emerald-700 font-medium block mb-1">
             Research &amp; Talent Pipeline
           </span>
-          <h3 id="modalTitle" class="text-xl font-semibold text-slate-950 tracking-tight">
-            Share a Problem or Refined Solution
+          <h3 id="modalTitle" class="text-xl font-bold text-slate-900 tracking-tight">
+            Share a Problem Statement
           </h3>
         </div>
         <button
@@ -220,166 +215,171 @@
       </div>
 
       <!-- Tab Toggle -->
-      <div class="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-slate-100 border border-slate-200/80 mb-5">
+      <div class="grid grid-cols-2 gap-1.5 p-1 rounded-lg bg-slate-100 border border-slate-200/80 mb-5">
         <button
           type="button"
           id="tabProblem"
           onclick="switchMode('problem')"
-          class="py-2 px-3 rounded-lg text-xs font-medium transition-colors cursor-pointer bg-white text-slate-950 shadow-xs"
+          class="py-2 px-3 rounded-md text-xs font-semibold transition-colors cursor-pointer bg-white text-slate-900 shadow-xs"
         >
-          Problem / Solution
+          Problem / Solution Pitch
         </button>
         <button
           type="button"
           id="tabInquiry"
           onclick="switchMode('inquiry')"
-          class="py-2 px-3 rounded-lg text-xs font-medium transition-colors cursor-pointer text-slate-600 hover:text-slate-950"
+          class="py-2 px-3 rounded-md text-xs font-medium transition-colors cursor-pointer text-slate-600 hover:text-slate-900"
         >
           General Inquiry
         </button>
       </div>
 
       <p id="modalDesc" class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-5">
-        Describe a broken workflow, manual bottleneck, or refined solution you’ve thought through. Standout contributors get invited to collaborate—or join KyGor’s team. Leave your email if you’d like to be considered.
+        Submit a broken workflow, manual bottleneck, or refined solution idea. Leave your email if you’d like to be considered for future collaboration or a spot on KyGor’s team.
       </p>
 
       <!-- Form -->
       <form id="kygorForm" class="space-y-4">
-        <input type="hidden" id="submissionType" name="Submission_Type" value="Problem / Solution" />
-        <input type="text" name="_honey" tabindex="-1" autocomplete="off" class="hidden" />
+        <input type="hidden" id="submissionType" name="Submission_Type" value="Problem Statement" />
 
-        <!-- Problem-Only Fields Wrapper -->
-        <div id="problemFields" class="space-y-4">
-          <!-- Domain Category -->
-          <div>
-            <label for="domainSelect" class="block text-xs font-medium text-slate-700 mb-1.5">
-              Domain / Industry Area
-            </label>
-            <select
-              id="domainSelect"
-              name="Domain_Area"
-              class="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 py-2.5 text-sm text-slate-900 focus:bg-white focus:border-slate-900 focus:outline-none transition-colors"
-            >
-              <option value="Software & Developer Tools">Software &amp; Developer Tools</option>
-              <option value="AI, Data & Automation">AI, Data &amp; Automation</option>
-              <option value="Business & Operations">Business &amp; Operations</option>
-              <option value="Consumer & Daily Workflow">Consumer &amp; Daily Workflow</option>
-              <option value="Infrastructure & Cloud">Infrastructure &amp; Cloud</option>
-              <option value="Other / Cross-Industry">Other / Cross-Industry</option>
-            </select>
-          </div>
-
-          <!-- Country & Current Stage (2-Column Grid) -->
+        <!-- Problem-Specific Discovery Fields -->
+        <div id="problemOnlyFields" class="space-y-4">
+          
+          <!-- Row 1: Domain + Current Stage -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <div>
-              <label for="countrySelect" class="block text-xs font-medium text-slate-700 mb-1.5">
-                Country <span class="text-slate-400 font-normal">(Optional)</span>
+              <label for="domainSelect" class="block text-xs font-semibold text-slate-700 mb-1.5">
+                Domain / Industry Area
               </label>
               <select
-                id="countrySelect"
-                name="Country"
-                class="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 py-2.5 text-sm text-slate-900 focus:bg-white focus:border-slate-900 focus:outline-none transition-colors"
+                id="domainSelect"
+                name="Domain_Area"
+                class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-slate-900 focus:outline-none"
               >
-                <option value="Not specified">Prefer not to say</option>
-                <option value="India">India</option>
-                <option value="United States">United States</option>
-                <option value="United Kingdom">United Kingdom</option>
-                <option value="Canada">Canada</option>
-                <option value="Germany">Germany</option>
-                <option value="Singapore">Singapore</option>
-                <option value="Australia">Australia</option>
-                <option value="United Arab Emirates">United Arab Emirates</option>
-                <option value="Other">Other</option>
+                <option value="Software & Developer Tools">Software &amp; Developer Tools</option>
+                <option value="AI, Data & Automation">AI, Data &amp; Automation</option>
+                <option value="Business & Operations">Business &amp; Operations</option>
+                <option value="Consumer & Daily Workflow">Consumer &amp; Daily Workflow</option>
+                <option value="Infrastructure & Cloud">Infrastructure &amp; Cloud</option>
+                <option value="Other / Cross-Industry">Other / Cross-Industry</option>
               </select>
             </div>
 
             <div>
-              <label for="stageSelect" class="block text-xs font-medium text-slate-700 mb-1.5">
+              <label for="stageSelect" class="block text-xs font-semibold text-slate-700 mb-1.5">
                 Current Stage <span class="text-slate-400 font-normal">(Optional)</span>
               </label>
               <select
                 id="stageSelect"
                 name="Current_Stage"
-                class="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 py-2.5 text-sm text-slate-900 focus:bg-white focus:border-slate-900 focus:outline-none transition-colors"
+                class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-slate-900 focus:outline-none"
               >
                 <option value="Not specified">Prefer not to say</option>
                 <option value="Student">Student</option>
                 <option value="Recent Graduate">Recent Graduate</option>
-                <option value="Working Professional (1–3 yrs)">Working Professional (1–3 yrs)</option>
-                <option value="Experienced Builder / Senior (3+ yrs)">Experienced Builder / Senior (3+ yrs)</option>
+                <option value="Working Professional (1-3 yrs)">Working Professional (1–3 yrs)</option>
+                <option value="Experienced Builder / Engineer (3+ yrs)">Experienced Builder / Engineer (3+ yrs)</option>
                 <option value="Founder / Business Owner">Founder / Business Owner</option>
                 <option value="Researcher / Academic">Researcher / Academic</option>
               </select>
             </div>
           </div>
+
+          <!-- Row 2: Country -->
+          <div>
+            <label for="countrySelect" class="block text-xs font-semibold text-slate-700 mb-1.5">
+              Country <span class="text-slate-400 font-normal">(Optional)</span>
+            </label>
+            <select
+              id="countrySelect"
+              name="Country"
+              class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-slate-900 focus:outline-none"
+            >
+              <option value="Not specified">Select country (optional)...</option>
+              <option value="India">India</option>
+              <option value="United States">United States</option>
+              <option value="United Kingdom">United Kingdom</option>
+              <option value="Canada">Canada</option>
+              <option value="Germany">Germany</option>
+              <option value="Singapore">Singapore</option>
+              <option value="Australia">Australia</option>
+              <option value="United Arab Emirates">United Arab Emirates</option>
+              <option value="Netherlands">Netherlands</option>
+              <option value="France">France</option>
+              <option value="Japan">Japan</option>
+              <option value="South Korea">South Korea</option>
+              <option value="Brazil">Brazil</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
         </div>
 
-        <!-- Message / Problem Textarea -->
+        <!-- Core Problem / Message Textarea -->
         <div>
-          <label id="messageLabel" for="messageInput" class="block text-xs font-medium text-slate-700 mb-1.5">
-            The Problem or Refined Solution <span class="text-slate-950">*</span>
+          <label id="messageLabel" for="messageInput" class="block text-xs font-semibold text-slate-700 mb-1.5">
+            The Problem or Proposed Solution <span class="text-emerald-600">*</span>
           </label>
           <textarea
             id="messageInput"
-            name="Message"
+            name="Problem_or_Solution"
             rows="3"
             required
-            placeholder="Describe the broken workflow, bottleneck, or your refined idea to fix it..."
-            class="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:border-slate-900 focus:outline-none resize-none transition-colors"
+            placeholder="Describe the bottleneck, broken workflow, or your refined idea to solve it..."
+            class="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:border-slate-900 focus:outline-none resize-none"
           ></textarea>
         </div>
 
-        <!-- Problem-Only Discovery Fields: Workaround & Friction Toll -->
-        <div id="discoveryFields" class="space-y-4">
+        <!-- Current Workaround & Emotional/Time Toll (Shown in Problem Mode) -->
+        <div id="discoveryExtras" class="space-y-4">
           <!-- Current Workaround -->
           <div>
-            <label for="workaroundInput" class="block text-xs font-medium text-slate-700 mb-1.5">
+            <label for="workaroundInput" class="block text-xs font-semibold text-slate-700 mb-1.5">
               Current Workaround <span class="text-slate-400 font-normal">(How do you currently solve or patch this?)</span>
             </label>
             <input
               type="text"
               id="workaroundInput"
               name="Current_Workaround"
-              placeholder="e.g., Manual spreadsheets, copy-pasting across 3 apps, custom scripts..."
-              class="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:border-slate-900 focus:outline-none transition-colors"
+              placeholder="e.g., Manual spreadsheets, duct-taped Python scripts, Notion + reminders, paying for 3 tools..."
+              class="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:border-slate-900 focus:outline-none"
             />
           </div>
 
-          <!-- Emotional or Time Toll -->
+          <!-- Emotional or Time Toll Quick Pills -->
           <div>
-            <span class="block text-xs font-medium text-slate-700 mb-2">
-              What makes this so frustrating? <span class="text-slate-400 font-normal">(Pick any that apply)</span>
+            <span class="block text-xs font-semibold text-slate-700 mb-2">
+              What makes this so frustrating? <span class="text-slate-400 font-normal">(Select all that apply)</span>
             </span>
-            <div id="tollOptions" class="flex flex-wrap gap-2">
+            <div id="frustrationPills" class="flex flex-wrap gap-2">
               <button
                 type="button"
-                data-toll="Takes too much time"
-                onclick="toggleToll(this)"
-                class="toll-pill px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-xs text-slate-700 hover:border-slate-300 transition-colors cursor-pointer"
+                data-value="Takes too much time"
+                onclick="togglePill(this)"
+                class="pill-btn px-3 py-1.5 rounded-full border border-slate-300 bg-slate-50 text-xs font-medium text-slate-700 hover:border-slate-400 transition-colors cursor-pointer"
               >
                 Takes too much time
               </button>
               <button
                 type="button"
-                data-toll="Too confusing / overwhelming"
-                onclick="toggleToll(this)"
-                class="toll-pill px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-xs text-slate-700 hover:border-slate-300 transition-colors cursor-pointer"
+                data-value="Too confusing / overwhelming"
+                onclick="togglePill(this)"
+                class="pill-btn px-3 py-1.5 rounded-full border border-slate-300 bg-slate-50 text-xs font-medium text-slate-700 hover:border-slate-400 transition-colors cursor-pointer"
               >
                 Too confusing / overwhelming
               </button>
               <button
                 type="button"
-                data-toll="Existing apps are too bloated / expensive"
-                onclick="toggleToll(this)"
-                class="toll-pill px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-xs text-slate-700 hover:border-slate-300 transition-colors cursor-pointer"
+                data-value="Existing apps are too bloated / expensive"
+                onclick="togglePill(this)"
+                class="pill-btn px-3 py-1.5 rounded-full border border-slate-300 bg-slate-50 text-xs font-medium text-slate-700 hover:border-slate-400 transition-colors cursor-pointer"
               >
                 Existing apps are too bloated / expensive
               </button>
               <button
                 type="button"
-                data-toll="Easy to forget"
-                onclick="toggleToll(this)"
-                class="toll-pill px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-xs text-slate-700 hover:border-slate-300 transition-colors cursor-pointer"
+                data-value="Easy to forget"
+                onclick="togglePill(this)"
+                class="pill-btn px-3 py-1.5 rounded-full border border-slate-300 bg-slate-50 text-xs font-medium text-slate-700 hover:border-slate-400 transition-colors cursor-pointer"
               >
                 Easy to forget
               </button>
@@ -389,34 +389,34 @@
 
         <!-- Optional Email Field -->
         <div>
-          <label id="emailLabel" for="emailInput" class="block text-xs font-medium text-slate-700 mb-1.5">
-            Your Email <span class="text-slate-400 font-normal">(Optional &mdash; required only if you want us to reach out / consider you for our team)</span>
+          <label id="emailLabel" for="emailInput" class="block text-xs font-semibold text-slate-700 mb-1.5">
+            Your Email <span class="text-slate-400 font-normal">(Optional &mdash; needed if you want to collaborate or join us)</span>
           </label>
           <input
             type="email"
             id="emailInput"
             name="Sender_Email"
             placeholder="you@domain.com"
-            class="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:border-slate-900 focus:outline-none transition-colors"
+            class="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:border-slate-900 focus:outline-none"
           />
         </div>
 
         <!-- Status Feedback -->
-        <div id="formStatus" class="hidden rounded-xl px-3.5 py-2.5 text-xs"></div>
+        <div id="formStatus" class="hidden rounded-lg px-3.5 py-2.5 text-xs font-medium"></div>
 
         <!-- Submit Button -->
-        <div class="pt-1 flex items-center justify-end gap-3">
+        <div class="pt-1 flex items-center justify-end gap-3 border-t border-slate-100">
           <button
             type="button"
             onclick="closeModal()"
-            class="px-4 py-2.5 rounded-xl text-xs font-medium text-slate-500 hover:text-slate-900 transition-colors cursor-pointer"
+            class="px-4 py-2.5 rounded-lg text-xs font-medium text-slate-500 hover:text-slate-900 transition-colors cursor-pointer"
           >
             Cancel
           </button>
           <button
             type="submit"
             id="submitBtn"
-            class="px-5 py-2.5 rounded-xl bg-slate-950 text-white text-xs font-semibold hover:bg-slate-800 transition-colors cursor-pointer disabled:opacity-50"
+            class="px-5 py-2.5 rounded-lg bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 transition-colors cursor-pointer disabled:opacity-50"
           >
             Transmit to KyGor
           </button>
@@ -436,8 +436,8 @@
     const modalTag = document.getElementById('modalTag');
     const modalTitle = document.getElementById('modalTitle');
     const modalDesc = document.getElementById('modalDesc');
-    const problemFields = document.getElementById('problemFields');
-    const discoveryFields = document.getElementById('discoveryFields');
+    const problemOnlyFields = document.getElementById('problemOnlyFields');
+    const discoveryExtras = document.getElementById('discoveryExtras');
     const messageLabel = document.getElementById('messageLabel');
     const messageInput = document.getElementById('messageInput');
     const emailLabel = document.getElementById('emailLabel');
@@ -447,51 +447,51 @@
     // Uses your activated FormSubmit token so your Gmail stays hidden from HTML source
     const FORMSUBMIT_ENDPOINT = 'https://formsubmit.co/ajax/e3267e3491286a17ae63e4f5e95e785a';
 
-    function toggleToll(btn) {
-      const selected = btn.getAttribute('data-selected') === 'true';
-      if (selected) {
-        btn.setAttribute('data-selected', 'false');
-        btn.className = 'toll-pill px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-xs text-slate-700 hover:border-slate-300 transition-colors cursor-pointer';
+    function togglePill(btn) {
+      btn.classList.toggle('selected');
+      if (btn.classList.contains('selected')) {
+        btn.classList.remove('border-slate-300', 'bg-slate-50', 'text-slate-700');
+        btn.classList.add('border-slate-900', 'bg-slate-900', 'text-white');
       } else {
-        btn.setAttribute('data-selected', 'true');
-        btn.className = 'toll-pill px-3 py-1.5 rounded-lg border border-slate-950 bg-slate-950 text-xs text-white font-medium transition-colors cursor-pointer';
+        btn.classList.remove('border-slate-900', 'bg-slate-900', 'text-white');
+        btn.classList.add('border-slate-300', 'bg-slate-50', 'text-slate-700');
       }
     }
 
-    function resetTolls() {
-      document.querySelectorAll('.toll-pill').forEach((btn) => {
-        btn.setAttribute('data-selected', 'false');
-        btn.className = 'toll-pill px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-xs text-slate-700 hover:border-slate-300 transition-colors cursor-pointer';
+    function resetPills() {
+      document.querySelectorAll('.pill-btn').forEach((btn) => {
+        btn.classList.remove('selected', 'border-slate-900', 'bg-slate-900', 'text-white');
+        btn.classList.add('border-slate-300', 'bg-slate-50', 'text-slate-700');
       });
     }
 
     function switchMode(mode) {
       formStatus.classList.add('hidden');
       if (mode === 'problem') {
-        tabProblem.className = 'py-2 px-3 rounded-lg text-xs font-medium transition-colors cursor-pointer bg-white text-slate-950 shadow-xs';
-        tabInquiry.className = 'py-2 px-3 rounded-lg text-xs font-medium transition-colors cursor-pointer text-slate-600 hover:text-slate-950';
+        tabProblem.className = 'py-2 px-3 rounded-md text-xs font-semibold transition-colors cursor-pointer bg-white text-slate-900 shadow-xs';
+        tabInquiry.className = 'py-2 px-3 rounded-md text-xs font-medium transition-colors cursor-pointer text-slate-600 hover:text-slate-900';
         modalTag.textContent = 'Research & Talent Pipeline';
-        modalTitle.textContent = 'Share a Problem or Refined Solution';
-        modalDesc.textContent = 'Describe a broken workflow, manual bottleneck, or refined solution you’ve thought through. Standout contributors get invited to collaborate—or join KyGor’s team. Leave your email if you’d like to be considered.';
-        problemFields.classList.remove('hidden');
-        discoveryFields.classList.remove('hidden');
-        submissionType.value = 'Problem / Solution';
-        messageLabel.innerHTML = 'The Problem or Refined Solution <span class="text-slate-950">*</span>';
-        messageInput.placeholder = 'Describe the broken workflow, bottleneck, or your refined idea to fix it...';
-        emailLabel.innerHTML = 'Your Email <span class="text-slate-400 font-normal">(Optional &mdash; required only if you want us to reach out / consider you for our team)</span>';
+        modalTitle.textContent = 'Share a Problem Statement';
+        modalDesc.textContent = 'Submit a broken workflow, manual bottleneck, or refined solution idea. Leave your email if you’d like to be considered for future collaboration or a spot on KyGor’s team.';
+        problemOnlyFields.classList.remove('hidden');
+        discoveryExtras.classList.remove('hidden');
+        submissionType.value = 'Problem Statement';
+        messageLabel.innerHTML = 'The Problem or Proposed Solution <span class="text-emerald-600">*</span>';
+        messageInput.placeholder = 'Describe the bottleneck, broken workflow, or your refined idea to solve it...';
+        emailLabel.innerHTML = 'Your Email <span class="text-slate-400 font-normal">(Optional &mdash; needed if you want to collaborate or join us)</span>';
         emailInput.required = false;
       } else {
-        tabInquiry.className = 'py-2 px-3 rounded-lg text-xs font-medium transition-colors cursor-pointer bg-white text-slate-950 shadow-xs';
-        tabProblem.className = 'py-2 px-3 rounded-lg text-xs font-medium transition-colors cursor-pointer text-slate-600 hover:text-slate-950';
+        tabInquiry.className = 'py-2 px-3 rounded-md text-xs font-semibold transition-colors cursor-pointer bg-white text-slate-900 shadow-xs';
+        tabProblem.className = 'py-2 px-3 rounded-md text-xs font-medium transition-colors cursor-pointer text-slate-600 hover:text-slate-900';
         modalTag.textContent = 'Direct Channel';
         modalTitle.textContent = 'General Inquiry';
         modalDesc.textContent = 'Have a question or want to connect quietly? Leave a note and an email address where we can reach you.';
-        problemFields.classList.add('hidden');
-        discoveryFields.classList.add('hidden');
+        problemOnlyFields.classList.add('hidden');
+        discoveryExtras.classList.add('hidden');
         submissionType.value = 'General Inquiry';
-        messageLabel.innerHTML = 'Your Message <span class="text-slate-950">*</span>';
+        messageLabel.innerHTML = 'Your Message <span class="text-emerald-600">*</span>';
         messageInput.placeholder = 'Write your message here...';
-        emailLabel.innerHTML = 'Your Email <span class="text-slate-950">*</span>';
+        emailLabel.innerHTML = 'Your Email <span class="text-emerald-600">*</span>';
         emailInput.required = true;
       }
     }
@@ -516,66 +516,5 @@
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const honey = form.querySelector('input[name="_honey"]')?.value || '';
-      if (honey) return;
-
       submitBtn.disabled = true;
       submitBtn.textContent = 'Transmitting...';
-      formStatus.classList.add('hidden');
-
-      const senderEmail = emailInput.value.trim();
-      const isProblem = submissionType.value === 'Problem / Solution';
-      const selectedTolls = Array.from(document.querySelectorAll('.toll-pill[data-selected="true"]'))
-        .map((btn) => btn.getAttribute('data-toll'));
-
-      const payload = {
-        _subject: `[KyGor] New ${submissionType.value}`,
-        _template: 'table',
-        Submission_Type: submissionType.value,
-        Domain_Area: isProblem ? document.getElementById('domainSelect').value : 'N/A',
-        Country: isProblem ? document.getElementById('countrySelect').value : 'N/A',
-        Current_Stage: isProblem ? document.getElementById('stageSelect').value : 'N/A',
-        Message: messageInput.value.trim(),
-        Current_Workaround: isProblem ? (document.getElementById('workaroundInput').value.trim() || 'Not specified') : 'N/A',
-        Frustration_Points: isProblem ? (selectedTolls.length ? selectedTolls.join(', ') : 'None selected') : 'N/A',
-        Sender_Email: senderEmail || 'Anonymous'
-      };
-
-      if (senderEmail) {
-        payload._replyto = senderEmail;
-      }
-
-      try {
-        const res = await fetch(FORMSUBMIT_ENDPOINT, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify(payload)
-        });
-
-        if (!res.ok) throw new Error('Network response was not ok');
-
-        formStatus.className = 'rounded-xl px-3.5 py-2.5 text-xs bg-emerald-50 border border-emerald-200 text-emerald-800';
-        formStatus.textContent = 'Received. Thank you for contributing to KyGor’s research log.';
-        formStatus.classList.remove('hidden');
-        form.reset();
-        resetTolls();
-
-        setTimeout(() => {
-          closeModal();
-          formStatus.classList.add('hidden');
-        }, 1800);
-      } catch (err) {
-        formStatus.className = 'rounded-xl px-3.5 py-2.5 text-xs bg-rose-50 border border-rose-200 text-rose-800';
-        formStatus.textContent = 'Transmission interrupted. Please check your connection and try again.';
-        formStatus.classList.remove('hidden');
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Transmit to KyGor';
-      }
-    });
-  </script>
-</body>
-</html>
